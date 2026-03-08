@@ -27,9 +27,7 @@ export default function SamplePaper() {
     : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
 
   const handlePrint = () => {
-    document.body.classList.add('printing');
-    window.print();
-    document.body.classList.remove('printing');
+    if (paper) printSamplePaper(paper, subject);
   };
 
   const handleGenerate = useCallback(async () => {

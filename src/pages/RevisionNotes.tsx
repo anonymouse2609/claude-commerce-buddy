@@ -18,9 +18,7 @@ export default function RevisionNotes() {
   const chapters = getChaptersBySubject(subject);
 
   const handlePrint = () => {
-    document.body.classList.add('printing');
-    window.print();
-    document.body.classList.remove('printing');
+    if (notes) printRevisionNotes(notes, subject);
   };
 
 
