@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Subject } from '@/types';
+import { sanitizeText } from '@/lib/sanitize';
 
 interface PaperQuestion {
   number: number;
@@ -105,7 +106,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{q.text}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{sanitizeText(q.text)}</p>
                       <span className="flex-shrink-0 text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
                         [{q.marks} {q.marks === 1 ? 'mark' : 'marks'}]
                       </span>
@@ -131,7 +132,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                                 onChange={() => selectOption(q.number, oIdx)}
                                 className="accent-[hsl(var(--subject-accountancy))]"
                               />
-                              <span>{letter}) {opt}</span>
+                              <span>{letter}) {sanitizeText(opt)}</span>
                             </label>
                           );
                         })}
@@ -146,7 +147,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-3 py-1 bg-muted rounded-full">OR</span>
                           <div className="flex-1 h-px bg-border" />
                         </div>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{q.orQuestion}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{sanitizeText(q.orQuestion)}</p>
                       </div>
                     )}
 
@@ -154,7 +155,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                     {showAnswers && q.answer && (
                       <div className="mt-3 p-3 rounded-lg bg-[hsl(var(--success)/0.1)] border border-[hsl(var(--success)/0.3)]">
                         <p className="text-xs font-semibold text-[hsl(var(--success))] mb-1">✅ Answer</p>
-                        <p className="text-sm whitespace-pre-wrap">{q.answer}</p>
+                        <p className="text-sm whitespace-pre-wrap">{sanitizeText(q.answer)}</p>
                       </div>
                     )}
                   </div>

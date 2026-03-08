@@ -77,12 +77,35 @@ Your response must be this exact JSON structure:
   "likely_questions": ["Most likely question 1", "Most likely question 2", "Most likely question 3", "Most likely question 4", "Most likely question 5"]
 }`,
       'mcq': `You are a CBSE Class 12 examiner. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON array starting with [ and ending with ]. Generate MCQs strictly following CBSE pattern including assertion-reason type. Each item must have: "question" (string), "options" (array of 4 strings), "correctAnswer" (0-3 index), "explanation" (string), "type" ("regular" or "assertion-reason").`,
-      'pyq': `You are a CBSE Class 12 expert. Generate questions in the exact style and pattern of CBSE board Previous Year Questions. Include competency-based questions and case studies matching CBSE 2024-25 pattern. Use markdown formatting.`,
+      'pyq': `You are a CBSE Class 12 expert. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No LaTeX. No HTML tags. No \\times or $ symbols. Write all math in plain English: use 'x' instead of '\\times', 'Rs' instead of '$', fractions as '3/4' not LaTeX.
+
+Return this exact JSON structure:
+{
+  "subject": "Subject Name",
+  "year": "2024",
+  "questions": [
+    {
+      "number": 1,
+      "marks": 6,
+      "type": "long",
+      "text": "Full question text in plain English",
+      "given_data": ["Data point 1", "Data point 2"],
+      "required": "What the student needs to do",
+      "answer": {
+        "steps": [
+          { "step": 1, "description": "Step description", "working": "Calculation in plain text", "marks": 1 }
+        ],
+        "final_answer": "Final answer text"
+      }
+    }
+  ]
+}
+For MCQ type questions, include "options": ["A", "B", "C", "D"] and answer can be a simple string.`,
       'answer-key': `You are a CBSE Class 12 expert examiner. Generate detailed answer keys with step-by-step solutions, marking scheme breakdowns, and examiner tips. Use markdown formatting.`,
     };
 
     const systemPrompt = systemPrompts[type] || systemPrompts['sample-paper'];
-    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes'];
+    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes', 'pyq'];
     const isStreaming = !jsonTypes.includes(type);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
