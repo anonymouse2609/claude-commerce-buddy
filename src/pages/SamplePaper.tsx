@@ -25,6 +25,12 @@ export default function SamplePaper() {
     ? 'Full Syllabus'
     : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
 
+  const handlePrint = () => {
+    document.body.classList.add('printing');
+    window.print();
+    document.body.classList.remove('printing');
+  };
+
   const handleGenerate = useCallback(async () => {
     setPaper(null);
     setShowAnswers(false);
