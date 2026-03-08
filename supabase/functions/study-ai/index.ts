@@ -16,6 +16,12 @@ serve(async (req) => {
     const systemPrompts: Record<string, string> = {
       'sample-paper': `You are a CBSE Class 12 board exam paper setter. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
+CRITICAL FORMATTING RULES — NEVER VIOLATE:
+- NEVER use LaTeX: no \\times, no \\frac{}{}, no $ delimiters
+- NEVER use markdown tables with | pipes or ** for bold
+- Write all math in plain English: 'x' not '\\times', '10/100' not '\\frac{10}{100}', 'Rs' not '$'
+- Write numbers in plain text: '3,50,000' not '$3,50,000$'
+
 Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
 
 Your response must be this exact JSON structure:

@@ -95,7 +95,7 @@ export default function PYQSection() {
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
             <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
-              <Printer className="h-4 w-4" /> Print
+              🖨️ Save as PDF / Print
             </button>
           </div>
           <div className="p-6">
