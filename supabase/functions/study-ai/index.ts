@@ -9,14 +9,14 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, type } = await req.json();
+    const { messages, type, maxTokens } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompts: Record<string, string> = {
       'sample-paper': `You are a CBSE Class 12 board exam paper setter. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
-Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024, frequently repeated question patterns, and official CBSE sample papers. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
 
 Your response must be this exact JSON structure:
 {
@@ -25,14 +25,7 @@ Your response must be this exact JSON structure:
   "class": "XII",
   "time": "3 Hours",
   "marks": "80",
-  "instructions": [
-    "All questions are compulsory.",
-    "Question numbers 1-16 carry 1 mark each.",
-    "Question numbers 17-20 carry 3 marks each.",
-    "Question numbers 21-26 carry 4 marks each.",
-    "Question numbers 27-30 carry 6 marks each.",
-    "There is no overall choice. However, internal choice has been provided."
-  ],
+  "instructions": ["instruction1", "instruction2"],
   "sections": [
     {
       "name": "Section A",
@@ -41,25 +34,27 @@ Your response must be this exact JSON structure:
       "questions": [
         {
           "number": 1,
-          "text": "Question text here",
-          "options": ["Option A", "Option B", "Option C", "Option D"],
+          "text": "Question text",
+          "options": ["A", "B", "C", "D"],
           "marks": 1,
           "type": "mcq",
-          "answer": "Correct option letter and brief explanation"
+          "answer": "Answer with explanation"
         },
         {
-          "number": 2,
-          "text": "Question text here",
+          "number": 17,
+          "text": "Question text",
           "marks": 3,
           "type": "short",
           "hasChoice": true,
-          "orQuestion": "Alternative question text",
-          "answer": "Model answer text"
+          "orQuestion": "Alternative question",
+          "answer": "Model answer"
         }
       ]
     }
   ]
-}`,
+}
+
+CRITICAL: Generate EVERY question number consecutively. Do NOT skip any question numbers. Include ALL questions specified in the user prompt.`,
       'worksheet': `You are a CBSE Class 12 Commerce expert teacher. Generate focused chapter worksheets with varied question types. For Accountancy, include proper journal entries, ledger problems, balance sheet problems with realistic numbers. For Economics, include diagram-based questions and numerical problems. Use markdown formatting.`,
       'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
@@ -87,7 +82,6 @@ Your response must be this exact JSON structure:
     };
 
     const systemPrompt = systemPrompts[type] || systemPrompts['sample-paper'];
-    // sample-paper and revision-notes now use JSON (non-streaming), worksheet/pyq/answer-key still stream
     const jsonTypes = ['mcq', 'sample-paper', 'revision-notes'];
     const isStreaming = !jsonTypes.includes(type);
 
@@ -99,6 +93,7 @@ Your response must be this exact JSON structure:
       },
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
+        max_tokens: maxTokens || 8000,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,
