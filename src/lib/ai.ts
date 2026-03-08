@@ -121,5 +121,8 @@ export async function generateMCQs(messages: { role: string; content: string }[]
   }
 
   const data = await resp.json();
-  return data.choices?.[0]?.message?.content || "[]";
+  const raw = data.choices?.[0]?.message?.content || "[]";
+  const parsed = extractJSON(raw);
+  if (!parsed) throw new Error("Generation failed — please try again.");
+  return JSON.stringify(parsed);
 }
