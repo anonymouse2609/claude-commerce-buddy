@@ -17,6 +17,12 @@ export default function PYQSection() {
 
   const chapters = getChaptersBySubject(subject);
 
+  const handlePrint = () => {
+    document.body.classList.add('printing');
+    window.print();
+    document.body.classList.remove('printing');
+  };
+
   const handleGenerate = async () => {
     if (!chapter) return;
     setData(null);
@@ -91,10 +97,10 @@ export default function PYQSection() {
         </div>
       )}
 
-      {data && (
+       {data && (
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
-            <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
+            <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               🖨️ Save as PDF / Print
             </button>
           </div>

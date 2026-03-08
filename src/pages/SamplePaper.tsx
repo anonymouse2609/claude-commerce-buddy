@@ -25,6 +25,12 @@ export default function SamplePaper() {
     ? 'Full Syllabus'
     : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
 
+  const handlePrint = () => {
+    document.body.classList.add('printing');
+    window.print();
+    document.body.classList.remove('printing');
+  };
+
   const handleGenerate = useCallback(async () => {
     setPaper(null);
     setShowAnswers(false);
@@ -154,7 +160,7 @@ export default function SamplePaper() {
               </button>
             )}
             {saved && <span className="text-sm font-medium text-[hsl(var(--success))]">✓ Saved</span>}
-            <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
+            <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
             </button>
             <button

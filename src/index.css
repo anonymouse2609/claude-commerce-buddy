@@ -174,53 +174,139 @@
 }
 
 @media print {
-  .no-print,
-  nav,
-  aside,
-  .sidebar,
-  header:not(.print-header) {
-    display: none !important;
-  }
-  body {
+  * {
     background: white !important;
+    background-color: white !important;
     color: black !important;
-    font-size: 12pt;
+    box-shadow: none !important;
+    text-shadow: none !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .print-content {
-    max-width: 100% !important;
+
+  body {
+    background: white !important;
+    font-family: 'Times New Roman', serif !important;
+    font-size: 12pt !important;
+    line-height: 1.6 !important;
+    color: black !important;
+    margin: 0 !important;
     padding: 0 !important;
   }
-  .question-card {
-    background: white !important;
-    border: 1px solid #ccc !important;
-    color: black !important;
-    page-break-inside: avoid;
-    margin-bottom: 12px;
+
+  /* Hide ALL app UI except content */
+  nav, header, sidebar, .sidebar, .navbar,
+  .theme-toggle, .menu-button, .print-button,
+  button, .tab-bar, .filter-bar, footer,
+  [class*='nav'], [class*='sidebar'],
+  [class*='header'], [class*='toolbar'] {
+    display: none !important;
   }
+
+  /* Show only the paper/content area */
+  .print-content, .paper-content, .question-list {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20pt !important;
+  }
+
+  /* Paper header */
+  .paper-header {
+    text-align: center !important;
+    border-bottom: 2px solid black !important;
+    padding-bottom: 12pt !important;
+    margin-bottom: 16pt !important;
+  }
+
+  /* Section headers */
   .section-header {
     background: #f0f0f0 !important;
     color: black !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    padding: 6pt 10pt !important;
+    font-weight: bold !important;
+    border: 1px solid #ccc !important;
+    margin: 12pt 0 8pt 0 !important;
   }
-  .answer-section {
-    display: block !important;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  td, th {
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-    color: black;
-  }
-  h1, h2, h3 {
+
+  /* Question cards */
+  .question-card {
+    background: white !important;
+    border: none !important;
+    border-bottom: 1px solid #ddd !important;
+    padding: 8pt 0 !important;
+    page-break-inside: avoid !important;
     color: black !important;
   }
-  .print-header {
+
+  /* Question number circles */
+  .question-number {
+    background: black !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 20pt !important;
+    height: 20pt !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: bold !important;
+    font-size: 10pt !important;
+  }
+
+  /* MCQ options */
+  .mcq-option {
     display: block !important;
+    color: black !important;
+    padding: 2pt 0 !important;
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    color: black !important;
+  }
+  td, th {
+    border: 1px solid black !important;
+    padding: 6pt 8pt !important;
+    color: black !important;
+    background: white !important;
+  }
+  th { background: #f0f0f0 !important; font-weight: bold !important; }
+
+  /* Answer sections */
+  .answer-section {
+    display: block !important;
+    background: #f9f9f9 !important;
+    border: 1px solid #ccc !important;
+    padding: 8pt !important;
+    margin-top: 6pt !important;
+  }
+
+  /* OR divider */
+  .or-divider {
+    text-align: center !important;
+    font-weight: bold !important;
+    color: black !important;
+    margin: 8pt 0 !important;
+  }
+
+  /* Marks badge */
+  .marks-badge {
+    color: black !important;
+    border: 1px solid black !important;
+    background: white !important;
+    padding: 2pt 6pt !important;
+    font-size: 10pt !important;
+  }
+
+  /* Page breaks */
+  .section-break { page-break-before: always !important; }
+  h1, h2, h3 { page-break-after: avoid !important; color: black !important; }
+
+  /* Page margins */
+  @page {
+    margin: 2cm !important;
+    size: A4 !important;
   }
 }
