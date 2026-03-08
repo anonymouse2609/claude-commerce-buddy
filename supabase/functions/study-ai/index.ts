@@ -14,13 +14,11 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompts: Record<string, string> = {
-      'sample-paper': `You are a CBSE Class 12 board exam paper setter. Generate papers STRICTLY based on:
-1. Previous year CBSE board questions from 2018-2024
-2. Frequently repeated question patterns in CBSE boards
-3. Official CBSE sample papers
-Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+      'sample-paper': `You are a CBSE Class 12 board exam paper setter. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
-Format your response as clean JSON ONLY (no markdown, no code fences) with this structure:
+Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024, frequently repeated question patterns, and official CBSE sample papers. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+
+Your response must be this exact JSON structure:
 {
   "title": "CBSE Sample Question Paper 2024-25",
   "subject": "Subject Name",
