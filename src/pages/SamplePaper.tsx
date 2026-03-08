@@ -1,31 +1,30 @@
 import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
-import { streamAI } from '@/lib/ai';
-import { savePaper, getSavedPapers } from '@/lib/store';
-import { Loader2, Printer, Save, Eye } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { generateJSON } from '@/lib/ai';
+import { savePaper } from '@/lib/store';
+import { Loader2, Printer, Save, Eye, EyeOff } from 'lucide-react';
+import SamplePaperRenderer, { PaperData } from '@/components/SamplePaperRenderer';
 
 export default function SamplePaper() {
   const [subject, setSubject] = useState<Subject>('accountancy');
   const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'mixed'>('medium');
   const [marks, setMarks] = useState(80);
-  const [content, setContent] = useState('');
-  const [answerKey, setAnswerKey] = useState('');
+  const [paper, setPaper] = useState<PaperData | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
-  const [loadingAnswers, setLoadingAnswers] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
 
   const chapters = getChaptersBySubject(subject);
   const allSelected = selectedChapters.length === 0;
 
   const handleGenerate = async () => {
-    setContent('');
-    setAnswerKey('');
+    setPaper(null);
     setShowAnswers(false);
     setSaved(false);
+    setError('');
     setLoading(true);
 
     const chapNames = allSelected
@@ -33,48 +32,27 @@ export default function SamplePaper() {
       : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
 
     try {
-      await streamAI({
-        type: 'sample-paper',
-        messages: [{
-          role: 'user',
-          content: `Generate a Class 12 ${SUBJECT_LABELS[subject]} sample paper covering ${chapNames} for ${marks} marks at ${difficulty} difficulty following CBSE 2024-25 board format with sections A (MCQs, 1 mark each), B (Short answer, 3-4 marks), C (Long answer, 6-8 marks) and D (Case study questions). Include proper header with subject name, time allowed (3 hours), maximum marks (${marks}), and general instructions.`,
-        }],
-        onDelta: (text) => setContent(prev => prev + text),
-        onDone: () => setLoading(false),
-      });
+      const data = await generateJSON('sample-paper', [{
+        role: 'user',
+        content: `Generate a Class 12 ${SUBJECT_LABELS[subject]} sample paper covering ${chapNames} for ${marks} marks at ${difficulty} difficulty following CBSE 2024-25 board format. Include sections for MCQs (1 mark), short answers (3 marks), long answers (4-6 marks), and case study questions. Include answers for every question.`,
+      }]);
+      setPaper(data);
     } catch (e: any) {
-      setContent(`Error: ${e.message}`);
+      setError(e.message);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleShowAnswers = async () => {
-    setLoadingAnswers(true);
-    setAnswerKey('');
-    try {
-      await streamAI({
-        type: 'answer-key',
-        messages: [
-          { role: 'user', content: `Here is a CBSE sample paper:\n\n${content}\n\nGenerate a detailed answer key with step-by-step solutions and marking scheme for every question.` },
-        ],
-        onDelta: (text) => setAnswerKey(prev => prev + text),
-        onDone: () => { setLoadingAnswers(false); setShowAnswers(true); },
-      });
-    } catch (e: any) {
-      setAnswerKey(`Error: ${e.message}`);
-      setLoadingAnswers(false);
-    }
-  };
-
   const handleSave = () => {
+    if (!paper) return;
     savePaper({
       id: Date.now().toString(),
       subject,
       chapters: allSelected ? ['Full Syllabus'] : selectedChapters,
       difficulty,
       marks,
-      content,
-      answerKey: answerKey || undefined,
+      content: JSON.stringify(paper),
       createdAt: new Date().toISOString(),
       attempted: false,
     });
@@ -141,11 +119,17 @@ export default function SamplePaper() {
           className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-medium text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-          {loading ? 'Generating...' : 'Generate Sample Paper'}
+          {loading ? 'Generating Paper...' : 'Generate Sample Paper'}
         </button>
       </div>
 
-      {content && (
+      {error && (
+        <div className="rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] p-4 text-sm text-[hsl(var(--destructive))]">
+          {error}
+        </div>
+      )}
+
+      {paper && (
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
             {!saved && (
@@ -153,30 +137,21 @@ export default function SamplePaper() {
                 <Save className="h-4 w-4" /> Save
               </button>
             )}
-            {saved && <span className="text-sm text-success font-medium">✓ Saved</span>}
+            {saved && <span className="text-sm font-medium text-[hsl(var(--success))]">✓ Saved</span>}
             <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
             </button>
-            {!showAnswers && !loadingAnswers && (
-              <button onClick={handleShowAnswers} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
-                <Eye className="h-4 w-4" /> Show Answer Key
-              </button>
-            )}
-            {loadingAnswers && (
-              <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Generating answers...
-              </span>
-            )}
+            <button
+              onClick={() => setShowAnswers(!showAnswers)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent"
+            >
+              {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showAnswers ? 'Hide Answers' : 'Show Answers'}
+            </button>
           </div>
-          <div className="p-6 print-content prose prose-sm max-w-none dark:prose-invert">
-            <ReactMarkdown>{content}</ReactMarkdown>
+          <div className="p-6">
+            <SamplePaperRenderer paper={paper} subject={subject} showAnswers={showAnswers} />
           </div>
-          {answerKey && (
-            <div className="border-t border-border p-6 print-content prose prose-sm max-w-none dark:prose-invert">
-              <h2>Answer Key</h2>
-              <ReactMarkdown>{answerKey}</ReactMarkdown>
-            </div>
-          )}
         </div>
       )}
     </div>

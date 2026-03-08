@@ -1,50 +1,50 @@
 import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
-import { streamAI } from '@/lib/ai';
+import { generateJSON } from '@/lib/ai';
 import { saveNotes } from '@/lib/store';
 import { Loader2, Printer, Save } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import RevisionNotesRenderer, { NotesData } from '@/components/RevisionNotesRenderer';
 
 export default function RevisionNotes() {
   const [subject, setSubject] = useState<Subject>('accountancy');
   const [chapter, setChapter] = useState('');
-  const [content, setContent] = useState('');
+  const [notes, setNotes] = useState<NotesData | null>(null);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
 
   const chapters = getChaptersBySubject(subject);
 
   const handleGenerate = async () => {
     if (!chapter) return;
-    setContent('');
+    setNotes(null);
     setSaved(false);
+    setError('');
     setLoading(true);
 
     const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
     try {
-      await streamAI({
-        type: 'revision-notes',
-        messages: [{
-          role: 'user',
-          content: `Create revision notes for Class 12 ${SUBJECT_LABELS[subject]} chapter: "${chapterName}". Include: chapter overview (3-4 lines), key concepts as bullet points, important definitions (highlighted with **bold**), formulas and their explanations (for Accountancy and Economics), common exam mistakes to avoid, PYQ trend analysis (what types of questions this chapter typically produces), and 5 most likely exam questions from this chapter. Make notes concise, printable, and CBSE exam focused.`,
-        }],
-        onDelta: (text) => setContent(prev => prev + text),
-        onDone: () => setLoading(false),
-      });
+      const data = await generateJSON('revision-notes', [{
+        role: 'user',
+        content: `Create revision notes for Class 12 ${SUBJECT_LABELS[subject]} chapter: "${chapterName}". Include all sections: overview, key concepts, definitions, formulas (if applicable for ${subject}), common mistakes, PYQ trends, and 5 most likely exam questions.`,
+      }]);
+      setNotes(data);
     } catch (e: any) {
-      setContent(`Error: ${e.message}`);
+      setError(e.message);
+    } finally {
       setLoading(false);
     }
   };
 
   const handleSave = () => {
+    if (!notes) return;
     saveNotes({
       id: Date.now().toString(),
       subject,
       chapter: chapters.find(c => c.id === chapter)?.name || chapter,
-      content,
+      content: JSON.stringify(notes),
       createdAt: new Date().toISOString(),
     });
     setSaved(true);
@@ -86,7 +86,13 @@ export default function RevisionNotes() {
         </button>
       </div>
 
-      {content && (
+      {error && (
+        <div className="rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] p-4 text-sm text-[hsl(var(--destructive))]">
+          {error}
+        </div>
+      )}
+
+      {notes && (
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
             {!saved && (
@@ -94,13 +100,13 @@ export default function RevisionNotes() {
                 <Save className="h-4 w-4" /> Save
               </button>
             )}
-            {saved && <span className="text-sm text-success font-medium">✓ Saved</span>}
+            {saved && <span className="text-sm font-medium text-[hsl(var(--success))]">✓ Saved</span>}
             <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
             </button>
           </div>
-          <div className="p-6 print-content prose prose-sm max-w-none dark:prose-invert">
-            <ReactMarkdown>{content}</ReactMarkdown>
+          <div className="p-6">
+            <RevisionNotesRenderer notes={notes} subject={subject} />
           </div>
         </div>
       )}

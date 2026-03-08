@@ -1,5 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
-
 const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/study-ai`;
 
 export async function streamAI({
@@ -55,6 +53,28 @@ export async function streamAI({
     }
   }
   onDone();
+}
+
+export async function generateJSON(type: string, messages: { role: string; content: string }[]): Promise<any> {
+  const resp = await fetch(FUNCTION_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify({ type, messages }),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({ error: "Request failed" }));
+    throw new Error(err.error || "AI request failed");
+  }
+
+  const data = await resp.json();
+  const raw = data.choices?.[0]?.message?.content || "";
+  // Strip markdown code fences if present
+  const cleaned = raw.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  return JSON.parse(cleaned);
 }
 
 export async function generateMCQs(messages: { role: string; content: string }[]): Promise<string> {
