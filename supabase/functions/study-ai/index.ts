@@ -14,16 +14,84 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompts: Record<string, string> = {
-      'sample-paper': `You are a CBSE Class 12 expert examiner. Generate papers exactly following CBSE 2024-25 board exam pattern and marking scheme. Include proper header with subject name, time, marks and instructions. Format with clear section headers (Section A, B, C, D). Use markdown formatting with ## for sections, **bold** for important text, and numbered questions.`,
+      'sample-paper': `You are a CBSE Class 12 board exam paper setter. Generate papers STRICTLY based on:
+1. Previous year CBSE board questions from 2018-2024
+2. Frequently repeated question patterns in CBSE boards
+3. Official CBSE sample papers
+Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+
+Format your response as clean JSON ONLY (no markdown, no code fences) with this structure:
+{
+  "title": "CBSE Sample Question Paper 2024-25",
+  "subject": "Subject Name",
+  "class": "XII",
+  "time": "3 Hours",
+  "marks": "80",
+  "instructions": [
+    "All questions are compulsory.",
+    "Question numbers 1-16 carry 1 mark each.",
+    "Question numbers 17-20 carry 3 marks each.",
+    "Question numbers 21-26 carry 4 marks each.",
+    "Question numbers 27-30 carry 6 marks each.",
+    "There is no overall choice. However, internal choice has been provided."
+  ],
+  "sections": [
+    {
+      "name": "Section A",
+      "subtitle": "Multiple Choice Questions",
+      "instruction": "Each question carries 1 mark",
+      "questions": [
+        {
+          "number": 1,
+          "text": "Question text here",
+          "options": ["Option A", "Option B", "Option C", "Option D"],
+          "marks": 1,
+          "type": "mcq",
+          "answer": "Correct option letter and brief explanation"
+        },
+        {
+          "number": 2,
+          "text": "Question text here",
+          "marks": 3,
+          "type": "short",
+          "hasChoice": true,
+          "orQuestion": "Alternative question text",
+          "answer": "Model answer text"
+        }
+      ]
+    }
+  ]
+}`,
       'worksheet': `You are a CBSE Class 12 Commerce expert teacher. Generate focused chapter worksheets with varied question types. For Accountancy, include proper journal entries, ledger problems, balance sheet problems with realistic numbers. For Economics, include diagram-based questions and numerical problems. Use markdown formatting.`,
-      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. Create concise, exam-focused revision notes. Include: chapter overview (3-4 lines), key concepts as bullet points, important definitions (use **bold**), formulas with explanations, common exam mistakes to avoid, PYQ trends, and 5 most likely exam questions. Use clean markdown formatting.`,
+      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. Create concise, exam-focused revision notes.
+
+Return revision notes as clean JSON ONLY (no markdown, no code fences) with this structure:
+{
+  "chapter": "Chapter Name",
+  "subject": "Subject Name",
+  "overview": "2-3 line chapter summary",
+  "key_concepts": [
+    { "title": "Concept name", "explanation": "Clear explanation in 2-3 sentences" }
+  ],
+  "definitions": [
+    { "term": "Term name", "definition": "Precise definition text" }
+  ],
+  "formulas": [
+    { "name": "Formula name", "formula": "Formula expression", "explanation": "What it means and when to use" }
+  ],
+  "common_mistakes": ["Mistake 1 description", "Mistake 2 description"],
+  "pyq_trends": "What types of questions this chapter produces in CBSE boards, which years, frequency",
+  "likely_questions": ["Most likely question 1", "Most likely question 2", "Most likely question 3", "Most likely question 4", "Most likely question 5"]
+}`,
       'mcq': `You are a CBSE Class 12 examiner. Generate MCQs strictly following CBSE pattern including assertion-reason type. Return ONLY valid JSON array. Each item must have: "question" (string), "options" (array of 4 strings), "correctAnswer" (0-3 index), "explanation" (string), "type" ("regular" or "assertion-reason"). Do not include any text outside the JSON array.`,
       'pyq': `You are a CBSE Class 12 expert. Generate questions in the exact style and pattern of CBSE board Previous Year Questions. Include competency-based questions and case studies matching CBSE 2024-25 pattern. Use markdown formatting.`,
       'answer-key': `You are a CBSE Class 12 expert examiner. Generate detailed answer keys with step-by-step solutions, marking scheme breakdowns, and examiner tips. Use markdown formatting.`,
     };
 
     const systemPrompt = systemPrompts[type] || systemPrompts['sample-paper'];
-    const isStreaming = type !== 'mcq';
+    // sample-paper and revision-notes now use JSON (non-streaming), worksheet/pyq/answer-key still stream
+    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes'];
+    const isStreaming = !jsonTypes.includes(type);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
