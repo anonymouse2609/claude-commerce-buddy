@@ -14,13 +14,11 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompts: Record<string, string> = {
-      'sample-paper': `You are a CBSE Class 12 board exam paper setter. Generate papers STRICTLY based on:
-1. Previous year CBSE board questions from 2018-2024
-2. Frequently repeated question patterns in CBSE boards
-3. Official CBSE sample papers
-Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+      'sample-paper': `You are a CBSE Class 12 board exam paper setter. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
-Format your response as clean JSON ONLY (no markdown, no code fences) with this structure:
+Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024, frequently repeated question patterns, and official CBSE sample papers. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
+
+Your response must be this exact JSON structure:
 {
   "title": "CBSE Sample Question Paper 2024-25",
   "subject": "Subject Name",
@@ -63,9 +61,9 @@ Format your response as clean JSON ONLY (no markdown, no code fences) with this 
   ]
 }`,
       'worksheet': `You are a CBSE Class 12 Commerce expert teacher. Generate focused chapter worksheets with varied question types. For Accountancy, include proper journal entries, ledger problems, balance sheet problems with realistic numbers. For Economics, include diagram-based questions and numerical problems. Use markdown formatting.`,
-      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. Create concise, exam-focused revision notes.
+      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
-Return revision notes as clean JSON ONLY (no markdown, no code fences) with this structure:
+Your response must be this exact JSON structure:
 {
   "chapter": "Chapter Name",
   "subject": "Subject Name",
@@ -83,7 +81,7 @@ Return revision notes as clean JSON ONLY (no markdown, no code fences) with this
   "pyq_trends": "What types of questions this chapter produces in CBSE boards, which years, frequency",
   "likely_questions": ["Most likely question 1", "Most likely question 2", "Most likely question 3", "Most likely question 4", "Most likely question 5"]
 }`,
-      'mcq': `You are a CBSE Class 12 examiner. Generate MCQs strictly following CBSE pattern including assertion-reason type. Return ONLY valid JSON array. Each item must have: "question" (string), "options" (array of 4 strings), "correctAnswer" (0-3 index), "explanation" (string), "type" ("regular" or "assertion-reason"). Do not include any text outside the JSON array.`,
+      'mcq': `You are a CBSE Class 12 examiner. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON array starting with [ and ending with ]. Generate MCQs strictly following CBSE pattern including assertion-reason type. Each item must have: "question" (string), "options" (array of 4 strings), "correctAnswer" (0-3 index), "explanation" (string), "type" ("regular" or "assertion-reason").`,
       'pyq': `You are a CBSE Class 12 expert. Generate questions in the exact style and pattern of CBSE board Previous Year Questions. Include competency-based questions and case studies matching CBSE 2024-25 pattern. Use markdown formatting.`,
       'answer-key': `You are a CBSE Class 12 expert examiner. Generate detailed answer keys with step-by-step solutions, marking scheme breakdowns, and examiner tips. Use markdown formatting.`,
     };
