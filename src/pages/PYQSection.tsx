@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
-import { Loader2, Printer, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 
 const years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
