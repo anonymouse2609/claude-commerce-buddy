@@ -30,18 +30,3 @@ export function sanitizeText(text: string): string {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
-
-/**
- * Renders sanitized text as React elements, converting \n to <br/>.
- */
-export function renderSanitizedText(text: string): React.ReactNode {
-  const clean = sanitizeText(text);
-  const parts = clean.split('\n');
-  if (parts.length === 1) return clean;
-  return parts.map((part, i) => (
-    <span key={i}>
-      {part}
-      {i < parts.length - 1 && <br />}
-    </span>
-  ));
-}
