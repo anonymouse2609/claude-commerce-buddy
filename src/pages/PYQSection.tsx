@@ -4,6 +4,7 @@ import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
+import { printPYQ } from '@/lib/print';
 
 const years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
 
@@ -18,9 +19,7 @@ export default function PYQSection() {
   const chapters = getChaptersBySubject(subject);
 
   const handlePrint = () => {
-    document.body.classList.add('printing');
-    window.print();
-    document.body.classList.remove('printing');
+    if (data) printPYQ(data, subject);
   };
 
   const handleGenerate = async () => {

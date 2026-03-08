@@ -5,6 +5,7 @@ import { generateSamplePaper, validatePaper } from '@/lib/ai';
 import { savePaper } from '@/lib/store';
 import { Loader2, Printer, Save, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
 import SamplePaperRenderer, { PaperData } from '@/components/SamplePaperRenderer';
+import { printSamplePaper } from '@/lib/print';
 
 export default function SamplePaper() {
   const [subject, setSubject] = useState<Subject>('accountancy');
@@ -26,9 +27,7 @@ export default function SamplePaper() {
     : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
 
   const handlePrint = () => {
-    document.body.classList.add('printing');
-    window.print();
-    document.body.classList.remove('printing');
+    if (paper) printSamplePaper(paper, subject);
   };
 
   const handleGenerate = useCallback(async () => {
