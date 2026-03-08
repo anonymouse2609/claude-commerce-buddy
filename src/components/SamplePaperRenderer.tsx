@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Subject } from '@/types';
+import { sanitizeText } from '@/lib/sanitize';
 
 interface PaperQuestion {
   number: number;
