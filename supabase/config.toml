@@ -1,1 +1,4 @@
 project_id = "tjcfgiggcybbfzwiznff"
+
+[functions.study-ai]
+verify_jwt = false
