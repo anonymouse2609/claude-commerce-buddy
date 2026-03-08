@@ -22,6 +22,8 @@ export default function RevisionNotes() {
     document.body.classList.remove('printing');
   };
 
+
+  const handleGenerate = async () => {
     if (!chapter) return;
     setNotes(null);
     setSaved(false);
