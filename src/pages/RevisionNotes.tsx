@@ -16,6 +16,14 @@ export default function RevisionNotes() {
 
   const chapters = getChaptersBySubject(subject);
 
+  const handlePrint = () => {
+    document.body.classList.add('printing');
+    window.print();
+    document.body.classList.remove('printing');
+  };
+
+  const chapters = getChaptersBySubject(subject);
+
   const handleGenerate = async () => {
     if (!chapter) return;
     setNotes(null);
