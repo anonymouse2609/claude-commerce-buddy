@@ -5,6 +5,7 @@ import { generateJSON } from '@/lib/ai';
 import { saveNotes } from '@/lib/store';
 import { Loader2, Printer, Save } from 'lucide-react';
 import RevisionNotesRenderer, { NotesData } from '@/components/RevisionNotesRenderer';
+import { printRevisionNotes } from '@/lib/print';
 
 export default function RevisionNotes() {
   const [subject, setSubject] = useState<Subject>('accountancy');
