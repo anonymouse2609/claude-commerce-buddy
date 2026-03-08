@@ -147,7 +147,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-3 py-1 bg-muted rounded-full">OR</span>
                           <div className="flex-1 h-px bg-border" />
                         </div>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{q.orQuestion}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{sanitizeText(q.orQuestion)}</p>
                       </div>
                     )}
 
