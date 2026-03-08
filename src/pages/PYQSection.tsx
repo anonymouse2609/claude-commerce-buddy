@@ -17,6 +17,12 @@ export default function PYQSection() {
 
   const chapters = getChaptersBySubject(subject);
 
+  const handlePrint = () => {
+    document.body.classList.add('printing');
+    window.print();
+    document.body.classList.remove('printing');
+  };
+
   const handleGenerate = async () => {
     if (!chapter) return;
     setData(null);
