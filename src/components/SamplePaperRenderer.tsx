@@ -155,7 +155,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                     {showAnswers && q.answer && (
                       <div className="mt-3 p-3 rounded-lg bg-[hsl(var(--success)/0.1)] border border-[hsl(var(--success)/0.3)]">
                         <p className="text-xs font-semibold text-[hsl(var(--success))] mb-1">✅ Answer</p>
-                        <p className="text-sm whitespace-pre-wrap">{q.answer}</p>
+                        <p className="text-sm whitespace-pre-wrap">{sanitizeText(q.answer)}</p>
                       </div>
                     )}
                   </div>
