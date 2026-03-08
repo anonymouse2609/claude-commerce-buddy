@@ -106,7 +106,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{q.text}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{sanitizeText(q.text)}</p>
                       <span className="flex-shrink-0 text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
                         [{q.marks} {q.marks === 1 ? 'mark' : 'marks'}]
                       </span>
