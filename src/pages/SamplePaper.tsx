@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
-import { generateJSON } from '@/lib/ai';
+import { generateSamplePaper, validatePaper } from '@/lib/ai';
 import { savePaper } from '@/lib/store';
-import { Loader2, Printer, Save, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Printer, Save, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
 import SamplePaperRenderer, { PaperData } from '@/components/SamplePaperRenderer';
 
 export default function SamplePaper() {
@@ -13,6 +13,7 @@ export default function SamplePaper() {
   const [marks, setMarks] = useState(80);
   const [paper, setPaper] = useState<PaperData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progressMsg, setProgressMsg] = useState('');
   const [showAnswers, setShowAnswers] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -20,29 +21,35 @@ export default function SamplePaper() {
   const chapters = getChaptersBySubject(subject);
   const allSelected = selectedChapters.length === 0;
 
-  const handleGenerate = async () => {
+  const chapNames = allSelected
+    ? 'Full Syllabus'
+    : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
+
+  const handleGenerate = useCallback(async () => {
     setPaper(null);
     setShowAnswers(false);
     setSaved(false);
     setError('');
     setLoading(true);
-
-    const chapNames = allSelected
-      ? 'Full Syllabus'
-      : chapters.filter(c => selectedChapters.includes(c.id)).map(c => c.name).join(', ');
+    setProgressMsg('Starting generation...');
 
     try {
-      const data = await generateJSON('sample-paper', [{
-        role: 'user',
-        content: `Generate a Class 12 ${SUBJECT_LABELS[subject]} sample paper covering ${chapNames} for ${marks} marks at ${difficulty} difficulty following CBSE 2024-25 board format. Include sections for MCQs (1 mark), short answers (3 marks), long answers (4-6 marks), and case study questions. Include answers for every question.`,
-      }]);
+      const data = await generateSamplePaper(
+        subject,
+        chapNames,
+        marks,
+        difficulty,
+        setProgressMsg,
+      );
       setPaper(data);
+      setProgressMsg('');
     } catch (e: any) {
-      setError(e.message);
+      setError(e.message || 'Generation failed — please try again.');
+      setProgressMsg('');
     } finally {
       setLoading(false);
     }
-  };
+  }, [subject, chapNames, marks, difficulty]);
 
   const handleSave = () => {
     if (!paper) return;
@@ -64,6 +71,8 @@ export default function SamplePaper() {
       prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
     );
   };
+
+  const validation = paper ? validatePaper(paper) : null;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -119,19 +128,26 @@ export default function SamplePaper() {
           className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-medium text-sm hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-          {loading ? 'Generating Paper...' : 'Generate Sample Paper'}
+          {loading ? progressMsg || 'Generating...' : 'Generate Sample Paper'}
         </button>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] p-4 text-sm text-[hsl(var(--destructive))]">
-          {error}
+        <div className="rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] p-4 flex items-center justify-between">
+          <span className="text-sm text-[hsl(var(--destructive))]">{error}</span>
+          <button
+            onClick={handleGenerate}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[hsl(var(--destructive)/0.1)] text-sm font-medium text-[hsl(var(--destructive))] hover:bg-[hsl(var(--destructive)/0.2)]"
+          >
+            <RefreshCw className="h-3.5 w-3.5" /> Retry
+          </button>
         </div>
       )}
 
       {paper && (
         <div className="bg-card rounded-xl border border-border">
-          <div className="flex items-center gap-2 p-4 border-b border-border no-print">
+          {/* Toolbar */}
+          <div className="flex items-center gap-2 p-4 border-b border-border no-print flex-wrap">
             {!saved && (
               <button onClick={handleSave} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
                 <Save className="h-4 w-4" /> Save
@@ -148,6 +164,27 @@ export default function SamplePaper() {
               {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               {showAnswers ? 'Hide Answers' : 'Show Answers'}
             </button>
+
+            {/* Marks summary */}
+            {validation && (
+              <div className="ml-auto flex items-center gap-3 text-xs">
+                <span className="text-muted-foreground">
+                  {validation.totalQuestions} questions · {validation.totalMarks} marks
+                </span>
+                {validation.totalMarks !== marks && (
+                  <span className="flex items-center gap-1 text-[hsl(var(--warning))]">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    Expected {marks} marks
+                  </span>
+                )}
+                {validation.missing.length > 0 && (
+                  <span className="flex items-center gap-1 text-[hsl(var(--warning))]">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    Missing Q{validation.missing.join(', ')}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div className="p-6">
             <SamplePaperRenderer paper={paper} subject={subject} showAnswers={showAnswers} />
