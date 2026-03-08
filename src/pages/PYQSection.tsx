@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
-import { Loader2, Printer, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 
 const years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
@@ -95,7 +95,7 @@ export default function PYQSection() {
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
             <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
-              <Printer className="h-4 w-4" /> Print
+              🖨️ Save as PDF / Print
             </button>
           </div>
           <div className="p-6">

@@ -1,4 +1,5 @@
 import { Subject } from '@/types';
+import { sanitizeText } from '@/lib/sanitize';
 
 export interface NotesData {
   chapter: string;
@@ -46,9 +47,9 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
     <div className="space-y-6 print-content">
       {/* Chapter Header */}
       <div className={`rounded-xl ${subjectBg[subject]} border ${subjectBorder[subject]} p-6`}>
-        <p className={`text-sm font-medium ${subjectText[subject]} uppercase tracking-wide`}>{notes.subject}</p>
-        <h2 className="text-2xl font-bold mt-1">{notes.chapter}</h2>
-        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{notes.overview}</p>
+        <p className={`text-sm font-medium ${subjectText[subject]} uppercase tracking-wide`}>{sanitizeText(notes.subject)}</p>
+        <h2 className="text-2xl font-bold mt-1">{sanitizeText(notes.chapter)}</h2>
+        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{sanitizeText(notes.overview)}</p>
       </div>
 
       {/* Key Concepts */}
@@ -57,9 +58,9 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
           <h3 className="text-lg font-bold mb-3 flex items-center gap-2">📚 Key Concepts</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {notes.key_concepts.map((c, i) => (
-              <div key={i} className="rounded-xl border border-border bg-card p-4">
-                <h4 className={`font-semibold text-sm ${subjectText[subject]}`}>{c.title}</h4>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{c.explanation}</p>
+              <div key={i} className="rounded-xl border border-border bg-card p-4 question-card">
+                <h4 className={`font-semibold text-sm ${subjectText[subject]}`}>{sanitizeText(c.title)}</h4>
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{sanitizeText(c.explanation)}</p>
               </div>
             ))}
           </div>
@@ -73,8 +74,8 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
           <div className="rounded-xl border border-border overflow-hidden">
             {notes.definitions.map((d, i) => (
               <div key={i} className={`flex gap-4 px-5 py-3 text-sm ${i % 2 === 0 ? 'bg-card' : 'bg-muted/30'}`}>
-                <span className={`font-semibold min-w-[140px] ${subjectText[subject]}`}>{d.term}</span>
-                <span className="text-muted-foreground">{d.definition}</span>
+                <span className={`font-semibold min-w-[140px] ${subjectText[subject]}`}>{sanitizeText(d.term)}</span>
+                <span className="text-muted-foreground">{sanitizeText(d.definition)}</span>
               </div>
             ))}
           </div>
@@ -87,10 +88,10 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
           <h3 className="text-lg font-bold mb-3 flex items-center gap-2">🔢 Formulas</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {notes.formulas.map((f, i) => (
-              <div key={i} className={`rounded-xl border ${subjectBorder[subject]} ${subjectBg[subject]} p-4`}>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{f.name}</p>
-                <p className="font-mono text-base font-bold mt-1">{f.formula}</p>
-                <p className="text-xs text-muted-foreground mt-2">{f.explanation}</p>
+              <div key={i} className={`rounded-xl border ${subjectBorder[subject]} ${subjectBg[subject]} p-4 question-card`}>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{sanitizeText(f.name)}</p>
+                <p className="font-mono text-base font-bold mt-1">{sanitizeText(f.formula)}</p>
+                <p className="text-xs text-muted-foreground mt-2">{sanitizeText(f.explanation)}</p>
               </div>
             ))}
           </div>
@@ -103,9 +104,9 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
           <h3 className="text-lg font-bold mb-3 flex items-center gap-2">⚠️ Common Mistakes</h3>
           <div className="space-y-2">
             {notes.common_mistakes.map((m, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] px-4 py-3">
+              <div key={i} className="flex items-start gap-3 rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] px-4 py-3 question-card">
                 <span className="text-[hsl(var(--destructive))] font-bold text-sm mt-0.5">⚠️</span>
-                <p className="text-sm">{m}</p>
+                <p className="text-sm">{sanitizeText(m)}</p>
               </div>
             ))}
           </div>
@@ -114,19 +115,19 @@ export default function RevisionNotesRenderer({ notes, subject }: Props) {
 
       {/* PYQ Trends */}
       {notes.pyq_trends && (
-        <div className="rounded-xl border border-[hsl(var(--warning)/0.3)] bg-[hsl(var(--warning)/0.05)] p-5">
+        <div className="rounded-xl border border-[hsl(var(--warning)/0.3)] bg-[hsl(var(--warning)/0.05)] p-5 question-card">
           <h3 className="text-base font-bold flex items-center gap-2 mb-2">📊 PYQ Trends</h3>
-          <p className="text-sm leading-relaxed">{notes.pyq_trends}</p>
+          <p className="text-sm leading-relaxed">{sanitizeText(notes.pyq_trends)}</p>
         </div>
       )}
 
       {/* Likely Questions */}
       {notes.likely_questions?.length > 0 && (
-        <div className="rounded-xl border border-[hsl(var(--success)/0.3)] bg-[hsl(var(--success)/0.05)] p-5">
+        <div className="rounded-xl border border-[hsl(var(--success)/0.3)] bg-[hsl(var(--success)/0.05)] p-5 question-card">
           <h3 className="text-base font-bold flex items-center gap-2 mb-3">🎯 Most Likely Exam Questions</h3>
           <ol className="list-decimal list-inside space-y-2">
             {notes.likely_questions.map((q, i) => (
-              <li key={i} className="text-sm leading-relaxed">{q}</li>
+              <li key={i} className="text-sm leading-relaxed">{sanitizeText(q)}</li>
             ))}
           </ol>
         </div>

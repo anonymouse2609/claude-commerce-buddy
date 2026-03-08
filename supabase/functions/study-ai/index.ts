@@ -16,6 +16,12 @@ serve(async (req) => {
     const systemPrompts: Record<string, string> = {
       'sample-paper': `You are a CBSE Class 12 board exam paper setter. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
+CRITICAL FORMATTING RULES — NEVER VIOLATE:
+- NEVER use LaTeX: no \\times, no \\frac{}{}, no $ delimiters
+- NEVER use markdown tables with | pipes or ** for bold
+- Write all math in plain English: 'x' not '\\times', '10/100' not '\\frac{10}{100}', 'Rs' not '$'
+- Write numbers in plain text: '3,50,000' not '$3,50,000$'
+
 Generate papers STRICTLY based on previous year CBSE board questions from 2018-2024. Never invent new questions — only use authentic CBSE board exam style questions and patterns.
 
 Your response must be this exact JSON structure:
@@ -77,7 +83,19 @@ Your response must be this exact JSON structure:
   "likely_questions": ["Most likely question 1", "Most likely question 2", "Most likely question 3", "Most likely question 4", "Most likely question 5"]
 }`,
       'mcq': `You are a CBSE Class 12 examiner. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON array starting with [ and ending with ]. Generate MCQs strictly following CBSE pattern including assertion-reason type. Each item must have: "question" (string), "options" (array of 4 strings), "correctAnswer" (0-3 index), "explanation" (string), "type" ("regular" or "assertion-reason").`,
-      'pyq': `You are a CBSE Class 12 expert. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No LaTeX. No HTML tags. No \\times or $ symbols. Write all math in plain English: use 'x' instead of '\\times', 'Rs' instead of '$', fractions as '3/4' not LaTeX.
+      'pyq': `You are a CBSE Class 12 expert. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
+
+CRITICAL FORMATTING RULES — NEVER VIOLATE:
+- NEVER use LaTeX: no \\times, no \\frac{}{}, no $ delimiters
+- NEVER use markdown tables with | pipes
+- NEVER use ** for bold
+- Write all math in plain English:
+  Write 'x' or 'multiplied by' instead of \\times
+  Write '10/100' instead of \\frac{10}{100}
+  Write 'Rs' instead of $
+  Write numbers in plain text: '3,50,000' not '$3,50,000$'
+- For tables use JSON objects: { "headers": ["Col1", "Col2"], "rows": [["val1", "val2"]] }
+- Max marks for any single question is 6 marks — never exceed this
 
 Return this exact JSON structure:
 {
@@ -93,14 +111,15 @@ Return this exact JSON structure:
       "required": "What the student needs to do",
       "answer": {
         "steps": [
-          { "step": 1, "description": "Step description", "working": "Calculation in plain text", "marks": 1 }
+          { "step": 1, "description": "Step description", "working": "Calculation in plain text using x not \\times", "marks": 1, "table": { "headers": ["Partner", "Amount"], "rows": [["A", "20,000"]] } }
         ],
         "final_answer": "Final answer text"
       }
     }
   ]
 }
-For MCQ type questions, include "options": ["A", "B", "C", "D"] and answer can be a simple string.`,
+For MCQ type questions include "options": ["A", "B", "C", "D"] and answer can be a simple string.
+The table field inside steps is optional — only include when the step involves tabular data.`,
       'answer-key': `You are a CBSE Class 12 expert examiner. Generate detailed answer keys with step-by-step solutions, marking scheme breakdowns, and examiner tips. Use markdown formatting.`,
     };
 
