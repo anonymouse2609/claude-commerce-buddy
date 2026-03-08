@@ -132,7 +132,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                                 onChange={() => selectOption(q.number, oIdx)}
                                 className="accent-[hsl(var(--subject-accountancy))]"
                               />
-                              <span>{letter}) {opt}</span>
+                              <span>{letter}) {sanitizeText(opt)}</span>
                             </label>
                           );
                         })}
