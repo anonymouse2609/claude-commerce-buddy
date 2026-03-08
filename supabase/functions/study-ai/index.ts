@@ -61,9 +61,9 @@ Your response must be this exact JSON structure:
   ]
 }`,
       'worksheet': `You are a CBSE Class 12 Commerce expert teacher. Generate focused chapter worksheets with varied question types. For Accountancy, include proper journal entries, ledger problems, balance sheet problems with realistic numbers. For Economics, include diagram-based questions and numerical problems. Use markdown formatting.`,
-      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. Create concise, exam-focused revision notes.
+      'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
-Return revision notes as clean JSON ONLY (no markdown, no code fences) with this structure:
+Your response must be this exact JSON structure:
 {
   "chapter": "Chapter Name",
   "subject": "Subject Name",
