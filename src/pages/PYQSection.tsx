@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
-import { streamAI } from '@/lib/ai';
-import { Loader2, Printer } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { generateJSON } from '@/lib/ai';
+import { Loader2, Printer, RefreshCw } from 'lucide-react';
+import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 
 const years = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
 
@@ -11,30 +11,29 @@ export default function PYQSection() {
   const [subject, setSubject] = useState<Subject>('accountancy');
   const [chapter, setChapter] = useState('');
   const [year, setYear] = useState('2024');
-  const [content, setContent] = useState('');
+  const [data, setData] = useState<PYQData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const chapters = getChaptersBySubject(subject);
 
   const handleGenerate = async () => {
     if (!chapter) return;
-    setContent('');
+    setData(null);
+    setError('');
     setLoading(true);
 
     const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
     try {
-      await streamAI({
-        type: 'pyq',
-        messages: [{
-          role: 'user',
-          content: `Generate Previous Year Questions in the exact style and pattern of CBSE Class 12 ${SUBJECT_LABELS[subject]} board exam ${year} for chapter "${chapterName}". Include competency-based questions and case studies matching the ${year} CBSE pattern. Show mark allocation for each question. At the end, provide a detailed marking scheme.`,
-        }],
-        onDelta: (text) => setContent(prev => prev + text),
-        onDone: () => setLoading(false),
-      });
+      const result = await generateJSON('pyq', [{
+        role: 'user',
+        content: `Generate Previous Year Questions in the exact style and pattern of CBSE Class 12 ${SUBJECT_LABELS[subject]} board exam ${year} for chapter "${chapterName}". Include 6-8 questions of varying marks (1, 3, 4, 6 marks). For numerical questions include given_data array and required field. Include step-by-step answers with marking scheme for each question.`,
+      }]);
+      setData(result);
     } catch (e: any) {
-      setContent(`Error: ${e.message}`);
+      setError(e.message || 'Generation failed — please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -80,15 +79,27 @@ export default function PYQSection() {
         </button>
       </div>
 
-      {content && (
+      {error && (
+        <div className="rounded-xl border border-[hsl(var(--destructive)/0.3)] bg-[hsl(var(--destructive)/0.05)] p-4 flex items-center justify-between">
+          <span className="text-sm text-[hsl(var(--destructive))]">{error}</span>
+          <button
+            onClick={handleGenerate}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[hsl(var(--destructive)/0.1)] text-sm font-medium text-[hsl(var(--destructive))] hover:bg-[hsl(var(--destructive)/0.2)]"
+          >
+            <RefreshCw className="h-3.5 w-3.5" /> Retry
+          </button>
+        </div>
+      )}
+
+      {data && (
         <div className="bg-card rounded-xl border border-border">
           <div className="flex items-center gap-2 p-4 border-b border-border no-print">
             <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
             </button>
           </div>
-          <div className="p-6 print-content prose prose-sm max-w-none dark:prose-invert">
-            <ReactMarkdown>{content}</ReactMarkdown>
+          <div className="p-6">
+            <PYQRenderer data={data} subject={subject} />
           </div>
         </div>
       )}
