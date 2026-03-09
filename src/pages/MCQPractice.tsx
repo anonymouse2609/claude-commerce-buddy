@@ -64,10 +64,12 @@ export default function MCQPractice() {
         ([qIdx, aIdx]) => questions[Number(qIdx)]?.correctAnswer === aIdx
       ).length;
 
+      const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
+
       saveMCQSession({
         id: Date.now().toString(),
         subject,
-        chapter: chapters.find(c => c.id === chapter)?.name || chapter,
+        chapter: chapterName,
         questions,
         answers,
         score,
@@ -76,6 +78,17 @@ export default function MCQPractice() {
       });
 
       updateMCQPerformance(chapter, subject, score, questions.length);
+
+      syncToGrowth({
+        type: 'mcq_completed',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapterName,
+        activity: 'MCQ Practice',
+        score,
+        totalQuestions: questions.length,
+        percentage: Math.round((score / questions.length) * 100),
+      });
+
       setFinished(true);
     } else {
       setCurrentIdx(prev => prev + 1);
