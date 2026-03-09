@@ -231,7 +231,7 @@ The table field inside steps is optional — only include when the step involves
     };
 
     const systemPrompt = systemPrompts[type] || systemPrompts['sample-paper'];
-    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes', 'pyq'];
+    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes', 'pyq', 'worksheet'];
     const isStreaming = !jsonTypes.includes(type);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
