@@ -3,6 +3,7 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateSamplePaper, validatePaper } from '@/lib/ai';
 import { savePaper } from '@/lib/store';
+import { syncToGrowth } from '@/lib/growth-sync';
 import { Loader2, Printer, Save, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
 import SamplePaperRenderer, { PaperData } from '@/components/SamplePaperRenderer';
 import { printSamplePaper } from '@/lib/print';
