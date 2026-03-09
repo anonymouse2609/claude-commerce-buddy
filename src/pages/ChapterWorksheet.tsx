@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
-import { streamAI } from '@/lib/ai';
+import { generateJSON } from '@/lib/ai';
 import { saveWorksheet } from '@/lib/store';
-import { Loader2, Printer, Save } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { Loader2, Save, Printer, Eye, EyeOff } from 'lucide-react';
+import WorksheetRenderer, { type WorksheetData } from '@/components/WorksheetRenderer';
+import { printWorksheet } from '@/lib/print';
 
 const questionTypes = [
   'Definitions', 'Short Answer', 'Long Answer', 'Numerical Problems',
   'Match the Following', 'Fill in the Blanks', 'True/False with Reasoning',
-  'Case Study', 'Diagram Based',
+  'Case Study', 'Diagram Based', 'MCQ',
 ];
 
 export default function ChapterWorksheet() {
@@ -17,43 +18,42 @@ export default function ChapterWorksheet() {
   const [chapter, setChapter] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['Short Answer', 'Definitions']);
   const [numQuestions, setNumQuestions] = useState(10);
-  const [content, setContent] = useState('');
+  const [worksheetData, setWorksheetData] = useState<WorksheetData | null>(null);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(false);
 
   const chapters = getChaptersBySubject(subject);
 
   const handleGenerate = async () => {
     if (!chapter) return;
-    setContent('');
+    setWorksheetData(null);
     setSaved(false);
     setLoading(true);
 
     const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
     try {
-      await streamAI({
-        type: 'worksheet',
-        messages: [{
-          role: 'user',
-          content: `Generate a focused worksheet for Class 12 ${SUBJECT_LABELS[subject]}, chapter: "${chapterName}". Include ${numQuestions} questions of these types: ${selectedTypes.join(', ')}. ${subject === 'accountancy' ? 'Include proper journal entries, ledger problems, balance sheet problems with realistic numbers where applicable.' : ''} ${subject === 'economics' ? 'Include diagram-based questions and numerical problems where applicable.' : ''} At the end, provide a complete answer key.`,
-        }],
-        onDelta: (text) => setContent(prev => prev + text),
-        onDone: () => setLoading(false),
-      });
+      const data = await generateJSON('worksheet', [{
+        role: 'user',
+        content: `Generate a focused worksheet for Class 12 ${SUBJECT_LABELS[subject]}, chapter: "${chapterName}". Include ${numQuestions} questions of these types: ${selectedTypes.join(', ')}. ${subject === 'accountancy' ? 'Include proper journal entries, ledger problems, balance sheet problems with realistic numbers where applicable.' : ''} ${subject === 'economics' ? 'Include diagram-based questions and numerical problems where applicable.' : ''} ${subject === 'english' ? 'For Flamingo prose use comprehension style with passage references. For poetry use extract-based questions with line references. For writing skills show the full prompt/situation clearly.' : ''} Group questions by type into separate sections. Number all questions consecutively.`,
+      }]);
+      setWorksheetData(data);
     } catch (e: any) {
-      setContent(`Error: ${e.message}`);
+      console.error('Worksheet generation failed:', e);
+    } finally {
       setLoading(false);
     }
   };
 
   const handleSave = () => {
+    if (!worksheetData) return;
     saveWorksheet({
       id: Date.now().toString(),
       subject,
       chapter: chapters.find(c => c.id === chapter)?.name || chapter,
       questionTypes: selectedTypes,
-      content,
+      content: JSON.stringify(worksheetData),
       createdAt: new Date().toISOString(),
     });
     setSaved(true);
@@ -124,23 +124,32 @@ export default function ChapterWorksheet() {
         </button>
       </div>
 
-      {content && (
-        <div className="bg-card rounded-xl border border-border">
-          <div className="flex items-center gap-2 p-4 border-b border-border no-print">
+      {worksheetData && (
+        <>
+          <div className="flex items-center gap-2 no-print">
             {!saved && (
               <button onClick={handleSave} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
                 <Save className="h-4 w-4" /> Save
               </button>
             )}
-            {saved && <span className="text-sm text-success font-medium">✓ Saved</span>}
-            <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
-              <Printer className="h-4 w-4" /> Print
+            {saved && <span className="text-sm text-[hsl(var(--success))] font-medium">✓ Saved</span>}
+            <button
+              onClick={() => setShowAnswers(!showAnswers)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent"
+            >
+              {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showAnswers ? 'Hide All Answers' : 'Show All Answers'}
+            </button>
+            <button
+              onClick={() => printWorksheet(worksheetData, subject)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent"
+            >
+              <Printer className="h-4 w-4" /> 🖨️ Save as PDF / Print
             </button>
           </div>
-          <div className="p-6 print-content prose prose-sm max-w-none dark:prose-invert">
-            <ReactMarkdown>{content}</ReactMarkdown>
-          </div>
-        </div>
+
+          <WorksheetRenderer data={worksheetData} subject={subject} showAnswers={showAnswers} />
+        </>
       )}
     </div>
   );

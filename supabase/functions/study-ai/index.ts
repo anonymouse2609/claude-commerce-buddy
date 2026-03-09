@@ -61,7 +61,114 @@ Your response must be this exact JSON structure:
 }
 
 CRITICAL: Generate EVERY question number consecutively. Do NOT skip any question numbers. Include ALL questions specified in the user prompt.`,
-      'worksheet': `You are a CBSE Class 12 Commerce expert teacher. Generate focused chapter worksheets with varied question types. For Accountancy, include proper journal entries, ledger problems, balance sheet problems with realistic numbers. For Economics, include diagram-based questions and numerical problems. Use markdown formatting.`,
+      'worksheet': `You are a CBSE Class 12 expert teacher. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
+
+CRITICAL FORMATTING RULES — NEVER VIOLATE:
+- NEVER use LaTeX: no \\times, no \\frac{}{}, no $ delimiters
+- NEVER use markdown tables with | pipes or ** for bold
+- Write all math in plain English: 'x' not '\\times', '10/100' not '\\frac{10}{100}', 'Rs' not '$'
+- Write numbers in plain text: '3,50,000' not '$3,50,000$'
+- For fill in the blanks use _______ (7 underscores) to show the blank
+
+Return this exact JSON structure:
+{
+  "subject": "Subject Name",
+  "chapter": "Chapter Name",
+  "total_marks": 40,
+  "total_questions": 20,
+  "sections": [
+    {
+      "name": "Part A: Definitions",
+      "instruction": "Define the following terms in 1-2 sentences",
+      "marks_each": 1,
+      "questions": [
+        {
+          "number": 1,
+          "text": "Define the term XYZ.",
+          "marks": 1,
+          "word_limit": "1-2 sentences",
+          "answer": "Model answer here"
+        }
+      ]
+    },
+    {
+      "name": "Part B: Short Answer Questions",
+      "instruction": "Answer each question in 40-50 words",
+      "marks_each": 2,
+      "questions": [
+        {
+          "number": 5,
+          "text": "Explain the concept of ABC.",
+          "marks": 2,
+          "word_limit": "40-50 words",
+          "hint": "Think about the relationship between X and Y",
+          "answer": "Model answer here"
+        }
+      ]
+    },
+    {
+      "name": "Part C: MCQ",
+      "instruction": "Choose the correct option",
+      "marks_each": 1,
+      "questions": [
+        {
+          "number": 10,
+          "text": "Which of the following is correct?",
+          "marks": 1,
+          "options": ["a) Option 1", "b) Option 2", "c) Option 3", "d) Option 4"],
+          "answer": "b) Option 2",
+          "explanation": "Because..."
+        }
+      ]
+    },
+    {
+      "name": "Part D: Fill in the Blanks",
+      "instruction": "Fill in the blanks with appropriate words",
+      "marks_each": 1,
+      "questions": [
+        {
+          "number": 15,
+          "text": "The process of _______ involves recording transactions.",
+          "marks": 1,
+          "answer": "journalising"
+        }
+      ]
+    },
+    {
+      "name": "Part E: True/False with Reasoning",
+      "instruction": "State whether the following statements are True or False. Give reason.",
+      "marks_each": 1,
+      "questions": [
+        {
+          "number": 18,
+          "text": "Statement here.",
+          "marks": 1,
+          "answer": "False. Because..."
+        }
+      ]
+    },
+    {
+      "name": "Part F: Long Answer Questions",
+      "instruction": "Answer in 120-150 words",
+      "marks_each": 5,
+      "questions": [
+        {
+          "number": 19,
+          "text": "Explain in detail...",
+          "marks": 5,
+          "word_limit": "120-150 words",
+          "answer": "Detailed model answer here"
+        }
+      ]
+    }
+  ]
+}
+
+Group questions by type into separate sections. Only include sections that match the requested question types. Number all questions consecutively across sections.
+
+For Accountancy: include proper journal entries, ledger problems, balance sheet problems with realistic numbers.
+For Economics: include diagram-based questions and numerical problems.
+For English Flamingo prose: comprehension style with passage references. For poetry: extract-based with line references. For Vistas: short and long answer. For Writing: show full prompt/situation clearly. For Grammar: sentences with blanks or errors.`,
       'revision-notes': `You are a CBSE Class 12 Commerce expert teacher. You must respond with ONLY valid JSON. No text before or after. No markdown. No backticks. No explanation. Just the raw JSON object starting with { and ending with }.
 
 Your response must be this exact JSON structure:
@@ -124,7 +231,7 @@ The table field inside steps is optional — only include when the step involves
     };
 
     const systemPrompt = systemPrompts[type] || systemPrompts['sample-paper'];
-    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes', 'pyq'];
+    const jsonTypes = ['mcq', 'sample-paper', 'revision-notes', 'pyq', 'worksheet'];
     const isStreaming = !jsonTypes.includes(type);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
