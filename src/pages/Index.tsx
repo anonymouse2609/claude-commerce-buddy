@@ -5,6 +5,7 @@ import { Subject, SUBJECT_LABELS, SUBJECT_ICONS } from '@/types';
 import { syllabusData, getChaptersBySubject } from '@/lib/syllabus-data';
 import { getChapterProgress, getExamDate, setExamDate, getSavedPapers, getSavedWorksheets, getSavedNotes } from '@/lib/store';
 import { differenceInDays } from 'date-fns';
+import WeakChaptersSection from '@/components/WeakChaptersSection';
 
 const subjectColorClasses: Record<Subject, { bg: string; text: string; border: string }> = {
   accountancy: { bg: 'bg-subject-accountancy/10', text: 'text-subject-accountancy', border: 'border-subject-accountancy' },
