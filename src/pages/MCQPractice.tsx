@@ -3,7 +3,8 @@ import { Subject, SUBJECT_LABELS, MCQQuestion } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateMCQs } from '@/lib/ai';
 import { saveMCQSession, updateMCQPerformance } from '@/lib/store';
-import { Loader2, Check, X, RotateCcw } from 'lucide-react';
+import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
+import { Loader2, Check, X, RotateCcw, Sprout } from 'lucide-react';
 
 export default function MCQPractice() {
   const [subject, setSubject] = useState<Subject>('accountancy');
