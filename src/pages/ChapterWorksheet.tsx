@@ -3,7 +3,8 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { saveWorksheet } from '@/lib/store';
-import { Loader2, Save, Printer, Eye, EyeOff } from 'lucide-react';
+import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
+import { Loader2, Save, Printer, Eye, EyeOff, Sprout } from 'lucide-react';
 import WorksheetRenderer, { type WorksheetData } from '@/components/WorksheetRenderer';
 import { printWorksheet } from '@/lib/print';
 
