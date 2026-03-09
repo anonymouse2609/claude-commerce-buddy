@@ -237,3 +237,48 @@ export function printRevisionNotes(notes: NotesData, subject: Subject) {
   `;
   openPrintView(wrapHTML(`Notes ${notes.subject} ${notes.chapter}`, body));
 }
+
+// ─── Worksheet ───
+export function printWorksheet(data: WorksheetData, subject: Subject) {
+  const totalMarks = data.total_marks || data.sections.reduce((sum, sec) => sec.questions.reduce((s2, q) => s2 + q.marks, sum), 0);
+  const totalQuestions = data.total_questions || data.sections.reduce((sum, sec) => sum + sec.questions.length, 0);
+
+  const sectionsHTML = data.sections.map(section => {
+    const instrHTML = section.instruction ? `<div class="section-instruction">${s(section.instruction)}</div>` : '';
+    const qHTML = section.questions.map(q => {
+      const wordLimitHTML = q.word_limit ? `<span style="font-size:10pt;color:#666;margin-left:8pt;">(${s(q.word_limit)})</span>` : '';
+      const optionsHTML = q.options?.length
+        ? `<div class="options">${q.options.map(o => `<div class="option">☐ ${s(o)}</div>`).join('')}</div>` : '';
+      const hintHTML = q.hint ? `<div style="font-size:10pt;color:#666;font-style:italic;margin-top:4pt;">Hint: ${s(q.hint)}</div>` : '';
+
+      // Determine answer space based on question type
+      const isShort = q.word_limit?.includes('40') || q.word_limit?.includes('50') || q.marks <= 2;
+      const isLong = q.word_limit?.includes('120') || q.word_limit?.includes('150') || q.marks >= 5;
+      const isMCQ = !!q.options?.length;
+      const isFillBlank = q.text.includes('_______');
+      const lineCount = isMCQ || isFillBlank ? 0 : isLong ? 8 : isShort ? 4 : 5;
+      const linesHTML = lineCount > 0
+        ? `<div style="margin-top:8pt;">${Array(lineCount).fill('<div style="border-bottom:1px dotted #ccc;height:22pt;"></div>').join('')}</div>` : '';
+
+      return `<div class="question"><div class="q-number">${q.number}.</div><div class="q-content"><div class="q-marks">[${q.marks} mark${q.marks > 1 ? 's' : ''}]</div><div class="q-text">${s(q.text)}${wordLimitHTML}</div>${hintHTML}${optionsHTML}${linesHTML}</div></div>`;
+    }).join('');
+    return `<div class="section-header">${s(section.name)}</div>${instrHTML}${qHTML}`;
+  }).join('');
+
+  const answersHTML = data.sections.map(section =>
+    section.questions.filter(q => q.answer).map(q =>
+      `<div class="answer-item"><div class="answer-item-title">Q${q.number}. [${q.marks} marks]</div><div>${s(q.answer!)}${q.explanation ? `<br><em>${s(q.explanation)}</em>` : ''}</div></div>`
+    ).join('')
+  ).join('');
+
+  const body = `
+    <div class="header">
+      <h1>Chapter Worksheet</h1>
+      <p>${s(data.subject)} — ${s(data.chapter)} (Class XII)</p>
+      <div class="meta"><span>Total Questions: ${totalQuestions}</span><span>Total Marks: ${totalMarks}</span></div>
+    </div>
+    ${sectionsHTML}
+    ${answersHTML ? `<div class="answer-section" style="page-break-before:always;"><div class="answer-header">ANSWER KEY</div>${answersHTML}</div>` : ''}
+  `;
+  openPrintView(wrapHTML(`Worksheet ${data.subject} ${data.chapter}`, body));
+}
