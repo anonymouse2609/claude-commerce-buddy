@@ -49,6 +49,13 @@ export default function SamplePaper() {
       );
       setPaper(data);
       setProgressMsg('');
+      syncToGrowth({
+        type: 'paper_attempted',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapNames,
+        activity: 'Sample Paper',
+        marks,
+      });
     } catch (e: any) {
       setError(e.message || 'Generation failed — please try again.');
       setProgressMsg('');

@@ -243,12 +243,18 @@ export default function MCQPractice() {
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button onClick={retryWrong} disabled={score === questions.length} className="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent disabled:opacity-50">
               <RotateCcw className="h-4 w-4" /> Retry Wrong Questions
             </button>
             <button onClick={() => { setQuestions([]); setChapter(''); }} className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
               New Practice
+            </button>
+            <button
+              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, score / questions.length >= 0.8 ? 'Easy' : 'Medium')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
+            >
+              <Sprout className="h-4 w-4" /> Add to Growth Revision Scheduler +
             </button>
           </div>
         </div>

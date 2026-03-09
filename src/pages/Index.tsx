@@ -150,6 +150,9 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Weak / Strong Chapters */}
+      <WeakChaptersSection />
+
       {/* Recent Activity */}
       {recentItems.length > 0 && (
         <div>
