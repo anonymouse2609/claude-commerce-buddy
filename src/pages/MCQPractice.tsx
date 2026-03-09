@@ -3,7 +3,8 @@ import { Subject, SUBJECT_LABELS, MCQQuestion } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateMCQs } from '@/lib/ai';
 import { saveMCQSession, updateMCQPerformance } from '@/lib/store';
-import { Loader2, Check, X, RotateCcw } from 'lucide-react';
+import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
+import { Loader2, Check, X, RotateCcw, Sprout } from 'lucide-react';
 
 export default function MCQPractice() {
   const [subject, setSubject] = useState<Subject>('accountancy');
@@ -63,10 +64,12 @@ export default function MCQPractice() {
         ([qIdx, aIdx]) => questions[Number(qIdx)]?.correctAnswer === aIdx
       ).length;
 
+      const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
+
       saveMCQSession({
         id: Date.now().toString(),
         subject,
-        chapter: chapters.find(c => c.id === chapter)?.name || chapter,
+        chapter: chapterName,
         questions,
         answers,
         score,
@@ -75,6 +78,17 @@ export default function MCQPractice() {
       });
 
       updateMCQPerformance(chapter, subject, score, questions.length);
+
+      syncToGrowth({
+        type: 'mcq_completed',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapterName,
+        activity: 'MCQ Practice',
+        score,
+        totalQuestions: questions.length,
+        percentage: Math.round((score / questions.length) * 100),
+      });
+
       setFinished(true);
     } else {
       setCurrentIdx(prev => prev + 1);
@@ -229,12 +243,18 @@ export default function MCQPractice() {
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button onClick={retryWrong} disabled={score === questions.length} className="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent disabled:opacity-50">
               <RotateCcw className="h-4 w-4" /> Retry Wrong Questions
             </button>
             <button onClick={() => { setQuestions([]); setChapter(''); }} className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
               New Practice
+            </button>
+            <button
+              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, score / questions.length >= 0.8 ? 'Easy' : 'Medium')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
+            >
+              <Sprout className="h-4 w-4" /> Add to Growth Revision Scheduler +
             </button>
           </div>
         </div>

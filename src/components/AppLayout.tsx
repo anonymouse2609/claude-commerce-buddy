@@ -5,6 +5,7 @@ import {
   Clock, BarChart3, Library, Moon, Sun, Menu, X
 } from 'lucide-react';
 import { getDarkMode, setDarkMode } from '@/lib/store';
+import GrowthSyncIndicator from '@/components/GrowthSyncIndicator';
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: Home },
@@ -113,6 +114,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           {children}
         </div>
       </main>
+
+      <GrowthSyncIndicator />
     </div>
   );
 }

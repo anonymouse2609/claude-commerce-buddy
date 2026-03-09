@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
+import { syncToGrowth } from '@/lib/growth-sync';
 import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 import { printPYQ } from '@/lib/print';
@@ -36,6 +37,13 @@ export default function PYQSection() {
         content: `Generate Previous Year Questions in the exact style and pattern of CBSE Class 12 ${SUBJECT_LABELS[subject]} board exam ${year} for chapter "${chapterName}". Include 6-8 questions of varying marks (1, 3, 4, 6 marks). For numerical questions include given_data array and required field. Include step-by-step answers with marking scheme for each question.`,
       }]);
       setData(result);
+      syncToGrowth({
+        type: 'pyq_attempted',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapterName,
+        activity: 'PYQ',
+        year,
+      });
     } catch (e: any) {
       setError(e.message || 'Generation failed — please try again.');
     } finally {

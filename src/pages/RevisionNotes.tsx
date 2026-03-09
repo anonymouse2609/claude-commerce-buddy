@@ -3,7 +3,8 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { saveNotes } from '@/lib/store';
-import { Loader2, Printer, Save } from 'lucide-react';
+import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
+import { Loader2, Printer, Save, Sprout } from 'lucide-react';
 import RevisionNotesRenderer, { NotesData } from '@/components/RevisionNotesRenderer';
 import { printRevisionNotes } from '@/lib/print';
 
@@ -37,6 +38,12 @@ export default function RevisionNotes() {
         content: `Create revision notes for Class 12 ${SUBJECT_LABELS[subject]} chapter: "${chapterName}". Include all sections: overview, key concepts, definitions, formulas (if applicable for ${subject}), common mistakes, PYQ trends, and 5 most likely exam questions.`,
       }]);
       setNotes(data);
+      syncToGrowth({
+        type: 'notes_viewed',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapterName,
+        activity: 'Revision Notes',
+      });
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -109,6 +116,12 @@ export default function RevisionNotes() {
             {saved && <span className="text-sm font-medium text-[hsl(var(--success))]">✓ Saved</span>}
             <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
+            </button>
+            <button
+              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, 'Medium')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
+            >
+              <Sprout className="h-4 w-4" /> Track this chapter in Growth +
             </button>
           </div>
           <div className="p-6">
