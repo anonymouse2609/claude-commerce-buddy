@@ -3,7 +3,8 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { saveNotes } from '@/lib/store';
-import { Loader2, Printer, Save } from 'lucide-react';
+import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
+import { Loader2, Printer, Save, Sprout } from 'lucide-react';
 import RevisionNotesRenderer, { NotesData } from '@/components/RevisionNotesRenderer';
 import { printRevisionNotes } from '@/lib/print';
 
