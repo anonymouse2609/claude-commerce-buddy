@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
+import { syncToGrowth } from '@/lib/growth-sync';
 import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 import { printPYQ } from '@/lib/print';
