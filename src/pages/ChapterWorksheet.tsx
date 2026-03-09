@@ -49,13 +49,21 @@ export default function ChapterWorksheet() {
 
   const handleSave = () => {
     if (!worksheetData) return;
+    const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
     saveWorksheet({
       id: Date.now().toString(),
       subject,
-      chapter: chapters.find(c => c.id === chapter)?.name || chapter,
+      chapter: chapterName,
       questionTypes: selectedTypes,
       content: JSON.stringify(worksheetData),
       createdAt: new Date().toISOString(),
+    });
+    syncToGrowth({
+      type: 'worksheet_completed',
+      subject: SUBJECT_LABELS[subject],
+      chapter: chapterName,
+      activity: 'Worksheet',
+      difficulty: 'Medium',
     });
     setSaved(true);
   };
