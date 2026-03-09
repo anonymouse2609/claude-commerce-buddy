@@ -3,6 +3,7 @@ import { SUBJECT_LABELS, type Subject } from '@/types';
 import type { PYQData } from '@/components/PYQRenderer';
 import type { PaperData } from '@/components/SamplePaperRenderer';
 import type { NotesData } from '@/components/RevisionNotesRenderer';
+import type { WorksheetData } from '@/components/WorksheetRenderer';
 
 const PRINT_STYLES = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
