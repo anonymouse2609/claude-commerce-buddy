@@ -38,6 +38,12 @@ export default function RevisionNotes() {
         content: `Create revision notes for Class 12 ${SUBJECT_LABELS[subject]} chapter: "${chapterName}". Include all sections: overview, key concepts, definitions, formulas (if applicable for ${subject}), common mistakes, PYQ trends, and 5 most likely exam questions.`,
       }]);
       setNotes(data);
+      syncToGrowth({
+        type: 'notes_viewed',
+        subject: SUBJECT_LABELS[subject],
+        chapter: chapterName,
+        activity: 'Revision Notes',
+      });
     } catch (e: any) {
       setError(e.message);
     } finally {
