@@ -3,12 +3,14 @@ import { SUBJECT_LABELS, Subject } from '@/types';
 import { getSavedPapers, getSavedWorksheets, getSavedNotes, getMCQSessions, deletePaper, deleteWorksheet, deleteNotes, clearLibrary } from '@/lib/store';
 import { Trash2, FileText, StickyNote, PenTool, HelpCircle, Printer } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import RevisionNotesRenderer, { type NotesData } from '@/components/RevisionNotesRenderer';
 
 type Tab = 'papers' | 'worksheets' | 'notes' | 'mcq';
 
 export default function MyLibrary() {
   const [tab, setTab] = useState<Tab>('papers');
   const [viewContent, setViewContent] = useState<string | null>(null);
+  const [viewNotes, setViewNotes] = useState<{ notes: NotesData; subject: Subject } | null>(null);
   const [, forceUpdate] = useState(0);
   const refresh = () => forceUpdate(n => n + 1);
 
@@ -23,6 +25,31 @@ export default function MyLibrary() {
     { key: 'notes', label: 'Notes', icon: StickyNote, count: notes.length },
     { key: 'mcq', label: 'MCQ Sessions', icon: HelpCircle, count: mcqSessions.length },
   ];
+
+  if (viewNotes) {
+    return (
+      <div className="space-y-4 animate-fade-in">
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => setViewNotes(null)}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto"
+          >
+            <Printer className="h-4 w-4" /> Print
+          </button>
+        </div>
+
+        <div className="bg-card rounded-xl border border-border p-6 print-content">
+          <RevisionNotesRenderer notes={viewNotes.notes} subject={viewNotes.subject} />
+        </div>
+      </div>
+    );
+  }
 
   if (viewContent) {
     return (
@@ -106,7 +133,18 @@ export default function MyLibrary() {
           {notes.length === 0 && <p className="text-muted-foreground text-sm py-8 text-center">No saved notes yet</p>}
           {notes.map(n => (
             <div key={n.id} className="bg-card rounded-xl border border-border p-4 flex items-center justify-between">
-              <div className="cursor-pointer flex-1" onClick={() => setViewContent(n.content)}>
+              <div
+                className="cursor-pointer flex-1"
+                onClick={() => {
+                  try {
+                    const parsed = JSON.parse(n.content) as NotesData;
+                    setViewNotes({ notes: parsed, subject: n.subject });
+                  } catch {
+                    // Fallback: still never show raw JSON; show a friendly message instead.
+                    setViewContent('Unable to open these notes (invalid saved format). Try regenerating and saving again.');
+                  }
+                }}
+              >
                 <p className="font-medium text-sm">{SUBJECT_LABELS[n.subject]} — {n.chapter}</p>
                 <p className="text-xs text-muted-foreground">{new Date(n.createdAt).toLocaleDateString()}</p>
               </div>
