@@ -3,8 +3,8 @@ import { Subject, SUBJECT_LABELS, MCQQuestion } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateMCQs } from '@/lib/ai';
 import { saveMCQSession, updateMCQPerformance } from '@/lib/store';
-import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
-import { Loader2, Check, X, RotateCcw, Sprout } from 'lucide-react';
+import { syncToGrowth, addToGrowth } from '@/lib/growth-sync';
+import { Loader2, Check, X, RotateCcw } from 'lucide-react';
 
 export default function MCQPractice() {
   const [subject, setSubject] = useState<Subject>('accountancy');
@@ -251,10 +251,16 @@ export default function MCQPractice() {
               New Practice
             </button>
             <button
-              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, score / questions.length >= 0.8 ? 'Easy' : 'Medium')}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
+              onClick={() =>
+                addToGrowth(
+                  SUBJECT_LABELS[subject],
+                  chapters.find(c => c.id === chapter)?.name || chapter,
+                  score / questions.length >= 0.8 ? 'Easy' : 'Medium'
+                )
+              }
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-sm font-medium hover:opacity-90"
             >
-              <Sprout className="h-4 w-4" /> Add to Growth Revision Scheduler +
+              Add to Growth Revision Schedule ➕
             </button>
           </div>
         </div>

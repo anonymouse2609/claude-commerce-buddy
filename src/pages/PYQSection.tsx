@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
-import { syncToGrowth } from '@/lib/growth-sync';
+import { syncToGrowth, addToGrowth } from '@/lib/growth-sync';
 import { Loader2, RefreshCw } from 'lucide-react';
 import PYQRenderer, { PYQData } from '@/components/PYQRenderer';
 import { printPYQ } from '@/lib/print';
@@ -18,6 +18,7 @@ export default function PYQSection() {
   const [error, setError] = useState('');
 
   const chapters = getChaptersBySubject(subject);
+  const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
   const handlePrint = () => {
     if (data) printPYQ(data, subject);
@@ -28,8 +29,6 @@ export default function PYQSection() {
     setData(null);
     setError('');
     setLoading(true);
-
-    const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
     try {
       const result = await generateJSON('pyq', [{
@@ -113,6 +112,14 @@ export default function PYQSection() {
           </div>
           <div className="p-6">
             <PYQRenderer data={data} subject={subject} />
+          </div>
+          <div className="p-4 border-t border-border no-print">
+            <button
+              onClick={() => addToGrowth(SUBJECT_LABELS[subject], chapterName, 'Medium')}
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-sm font-medium hover:opacity-90"
+            >
+              Add to Growth Revision Schedule ➕
+            </button>
           </div>
         </div>
       )}

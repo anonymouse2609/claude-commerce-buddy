@@ -3,8 +3,8 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { saveWorksheet } from '@/lib/store';
-import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
-import { Loader2, Save, Printer, Eye, EyeOff, Sprout } from 'lucide-react';
+import { syncToGrowth, addToGrowth } from '@/lib/growth-sync';
+import { Loader2, Save, Printer, Eye, EyeOff } from 'lucide-react';
 import WorksheetRenderer, { type WorksheetData } from '@/components/WorksheetRenderer';
 import { printWorksheet } from '@/lib/print';
 
@@ -25,6 +25,7 @@ export default function ChapterWorksheet() {
   const [showAnswers, setShowAnswers] = useState(false);
 
   const chapters = getChaptersBySubject(subject);
+  const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
   const handleGenerate = async () => {
     if (!chapter) return;
@@ -49,7 +50,6 @@ export default function ChapterWorksheet() {
 
   const handleSave = () => {
     if (!worksheetData) return;
-    const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
     saveWorksheet({
       id: Date.now().toString(),
       subject,
@@ -156,10 +156,10 @@ export default function ChapterWorksheet() {
               <Printer className="h-4 w-4" /> 🖨️ Save as PDF / Print
             </button>
             <button
-              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, 'Medium')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
+              onClick={() => addToGrowth(SUBJECT_LABELS[subject], chapterName, 'Medium')}
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-sm font-medium hover:opacity-90 no-print"
             >
-              <Sprout className="h-4 w-4" /> Add chapter to Growth Revision Scheduler +
+              Add to Growth Revision Schedule ➕
             </button>
           </div>
 

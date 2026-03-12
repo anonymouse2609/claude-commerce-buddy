@@ -3,8 +3,8 @@ import { Subject, SUBJECT_LABELS } from '@/types';
 import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateJSON } from '@/lib/ai';
 import { saveNotes } from '@/lib/store';
-import { syncToGrowth, addToRevision } from '@/lib/growth-sync';
-import { Loader2, Printer, Save, Sprout } from 'lucide-react';
+import { syncToGrowth, addToGrowth } from '@/lib/growth-sync';
+import { Loader2, Printer, Save } from 'lucide-react';
 import RevisionNotesRenderer, { NotesData } from '@/components/RevisionNotesRenderer';
 import { printRevisionNotes } from '@/lib/print';
 
@@ -17,6 +17,7 @@ export default function RevisionNotes() {
   const [error, setError] = useState('');
 
   const chapters = getChaptersBySubject(subject);
+  const chapterName = chapters.find(c => c.id === chapter)?.name || chapter;
 
   const handlePrint = () => {
     if (notes) printRevisionNotes(notes, subject);
@@ -56,7 +57,7 @@ export default function RevisionNotes() {
     saveNotes({
       id: Date.now().toString(),
       subject,
-      chapter: chapters.find(c => c.id === chapter)?.name || chapter,
+      chapter: chapterName,
       content: JSON.stringify(notes),
       createdAt: new Date().toISOString(),
     });
@@ -117,15 +118,17 @@ export default function RevisionNotes() {
             <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent">
               <Printer className="h-4 w-4" /> Print
             </button>
-            <button
-              onClick={() => addToRevision(SUBJECT_LABELS[subject], chapters.find(c => c.id === chapter)?.name || chapter, 'Medium')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[hsl(var(--success)/0.1)] text-[hsl(var(--success))] text-sm font-medium hover:bg-[hsl(var(--success)/0.2)]"
-            >
-              <Sprout className="h-4 w-4" /> Track this chapter in Growth +
-            </button>
           </div>
           <div className="p-6">
             <RevisionNotesRenderer notes={notes} subject={subject} />
+          </div>
+          <div className="p-4 border-t border-border no-print">
+            <button
+              onClick={() => addToGrowth(SUBJECT_LABELS[subject], chapterName, 'Medium')}
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-sm font-medium hover:opacity-90"
+            >
+              Add to Growth Revision Schedule ➕
+            </button>
           </div>
         </div>
       )}

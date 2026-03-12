@@ -79,6 +79,17 @@ export function addToRevision(subject: string, chapter: string, difficulty: stri
   }
 }
 
+export function addToGrowth(subject: string, chapter: string, difficulty?: string) {
+  const growthUrl = 'https://mindful-stride-board.lovable.app';
+  const params = new URLSearchParams({
+    action: 'add_revision',
+    subject,
+    chapter,
+    difficulty: difficulty || 'Medium',
+  });
+  window.open(`${growthUrl}?${params.toString()}`, '_blank');
+}
+
 // Daily summary
 function writeDailySummary() {
   const today = new Date().toISOString().slice(0, 10);
