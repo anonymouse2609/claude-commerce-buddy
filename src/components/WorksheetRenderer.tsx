@@ -41,6 +41,7 @@ const subjectColorClass: Record<Subject, string> = {
   economics: 'bg-[hsl(var(--subject-economics))]',
   english: 'bg-[hsl(var(--subject-english))]',
   marketing: 'bg-[hsl(var(--subject-marketing))]',
+  applied_math: 'bg-[hsl(var(--subject-applied-math))]',
 };
 
 const subjectBorderClass: Record<Subject, string> = {
@@ -49,6 +50,7 @@ const subjectBorderClass: Record<Subject, string> = {
   economics: 'border-[hsl(var(--subject-economics))]',
   english: 'border-[hsl(var(--subject-english))]',
   marketing: 'border-[hsl(var(--subject-marketing))]',
+  applied_math: 'border-[hsl(var(--subject-applied-math))]',
 };
 
 export default function WorksheetRenderer({ data, subject, showAnswers }: Props) {

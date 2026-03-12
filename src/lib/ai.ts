@@ -194,6 +194,26 @@ Total: 30 questions, 80 marks. DO NOT skip any question numbers.`,
     60: `Generate EXACTLY: MCQs (1 mark) 15 questions 1-15. Short (3 marks) 5 questions 16-20. Long (5 marks) 4 questions 21-24 with OR on 23-24. Total: 24 questions, 60 marks.`,
     40: `Generate EXACTLY: MCQs (1 mark) 10 questions 1-10. Short (3 marks) 4 questions 11-14. Long (5 marks) 2 questions 15-16 with OR on 16. Total: 16 questions, 40 marks.`,
   },
+  applied_math: {
+    80: `Generate EXACTLY these questions:
+Section A MCQs (1 mark each): EXACTLY 20 questions numbered 1 to 20
+Section B Short Answer (2 marks each): EXACTLY 6 questions numbered 21 to 26
+Section C Short Answer (3 marks each): EXACTLY 6 questions numbered 27 to 32. Questions 31 and 32 must each have an OR option.
+Section D Long Answer (5 marks each): EXACTLY 6 questions numbered 33 to 38. Questions 37 and 38 must each have an OR option.
+Total: 38 questions, 80 marks. Include calculation-based and application-based questions. DO NOT skip any question numbers.`,
+    60: `Generate EXACTLY these questions:
+Section A MCQs (1 mark each): EXACTLY 15 questions numbered 1 to 15
+Section B Short Answer (2 marks each): EXACTLY 6 questions numbered 16 to 21
+Section C Short Answer (3 marks each): EXACTLY 5 questions numbered 22 to 26. Question 26 must have an OR option.
+Section D Long Answer (5 marks each): EXACTLY 3 questions numbered 27 to 29. Questions 28 and 29 must each have an OR option.
+Total: 29 questions, 60 marks. DO NOT skip any question numbers.`,
+    40: `Generate EXACTLY these questions:
+Section A MCQs (1 mark each): EXACTLY 10 questions numbered 1 to 10
+Section B Short Answer (2 marks each): EXACTLY 5 questions numbered 11 to 15
+Section C Short Answer (3 marks each): EXACTLY 4 questions numbered 16 to 19. Question 19 must have an OR option.
+Section D Long Answer (5 marks each): EXACTLY 1 question numbered 20 with an OR option.
+Total: 20 questions, 40 marks. DO NOT skip any question numbers.`,
+  },
 };
 
 function validatePaper(paper: PaperData): { valid: boolean; totalMarks: number; totalQuestions: number; missing: number[] } {

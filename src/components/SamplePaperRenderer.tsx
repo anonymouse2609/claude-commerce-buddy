@@ -42,6 +42,7 @@ const subjectColorClass: Record<Subject, string> = {
   economics: 'bg-[hsl(var(--subject-economics))]',
   english: 'bg-[hsl(var(--subject-english))]',
   marketing: 'bg-[hsl(var(--subject-marketing))]',
+  applied_math: 'bg-[hsl(var(--subject-applied-math))]',
 };
 
 const subjectBorderClass: Record<Subject, string> = {
@@ -50,6 +51,7 @@ const subjectBorderClass: Record<Subject, string> = {
   economics: 'border-[hsl(var(--subject-economics))]',
   english: 'border-[hsl(var(--subject-english))]',
   marketing: 'border-[hsl(var(--subject-marketing))]',
+  applied_math: 'border-[hsl(var(--subject-applied-math))]',
 };
 
 export default function SamplePaperRenderer({ paper, subject, showAnswers }: Props) {
@@ -130,7 +132,7 @@ export default function SamplePaperRenderer({ paper, subject, showAnswers }: Pro
                                 name={`q-${q.number}`}
                                 checked={isSelected}
                                 onChange={() => selectOption(q.number, oIdx)}
-                                className="accent-[hsl(var(--subject-accountancy))]"
+                                className="accent-primary"
                               />
                               <span>{letter}) {sanitizeText(opt)}</span>
                             </label>

@@ -20,7 +20,7 @@ export default function SyllabusTracker() {
   const [selectedSubject, setSelectedSubject] = useState<Subject>(initialSubject);
   const [progress, setProgress] = useState(getChapterProgress());
 
-  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing'];
+  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing', 'applied_math'];
   const chapters = useMemo(() => getChaptersBySubject(selectedSubject), [selectedSubject]);
 
   const getStatus = (chapterId: string): ChapterStatus => {

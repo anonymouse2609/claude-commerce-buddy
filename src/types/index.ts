@@ -1,4 +1,4 @@
-export type Subject = 'accountancy' | 'business' | 'economics' | 'english' | 'marketing';
+export type Subject = 'accountancy' | 'business' | 'economics' | 'english' | 'marketing' | 'applied_math';
 
 export type ChapterStatus = 'not-started' | 'in-progress' | 'completed' | 'needs-revision';
 
@@ -83,6 +83,7 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
   economics: 'Economics',
   english: 'English',
   marketing: 'Marketing',
+  applied_math: 'Applied Mathematics',
 };
 
 export const SUBJECT_ICONS: Record<Subject, string> = {
@@ -91,4 +92,5 @@ export const SUBJECT_ICONS: Record<Subject, string> = {
   economics: '📈',
   english: '📚',
   marketing: '🎯',
+  applied_math: '🧮',
 };

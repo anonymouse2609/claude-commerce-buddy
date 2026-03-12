@@ -7,7 +7,7 @@ export default function Analytics() {
   const performance = getMCQPerformance();
   const progress = getChapterProgress();
 
-  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing'];
+  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing', 'applied_math'];
 
   const weakChapters = useMemo(() => {
     return performance

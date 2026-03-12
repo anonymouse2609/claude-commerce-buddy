@@ -72,6 +72,17 @@ export const syllabusData: Chapter[] = [
   { id: 'mkt-8', name: 'Consumer Behaviour', subject: 'marketing', unit: 'Unit 8', weightage: 8 },
   { id: 'mkt-9', name: 'Rural Marketing', subject: 'marketing', unit: 'Unit 9', weightage: 8 },
   { id: 'mkt-10', name: 'E-Marketing and Digital Marketing', subject: 'marketing', unit: 'Unit 10', weightage: 12 },
+
+  // APPLIED MATHEMATICS
+  { id: 'am-1', name: 'Numbers and Quantification', subject: 'applied_math', unit: 'Unit 1', weightage: 10 },
+  { id: 'am-2', name: 'Algebra', subject: 'applied_math', unit: 'Unit 2', weightage: 10 },
+  { id: 'am-3', name: 'Calculus', subject: 'applied_math', unit: 'Unit 3', weightage: 12 },
+  { id: 'am-4', name: 'Probability Distributions', subject: 'applied_math', unit: 'Unit 4', weightage: 10 },
+  { id: 'am-5', name: 'Inferential Statistics', subject: 'applied_math', unit: 'Unit 5', weightage: 10 },
+  { id: 'am-6', name: 'Index Numbers', subject: 'applied_math', unit: 'Unit 6', weightage: 8 },
+  { id: 'am-7', name: 'Time Based Data', subject: 'applied_math', unit: 'Unit 7', weightage: 8 },
+  { id: 'am-8', name: 'Financial Mathematics', subject: 'applied_math', unit: 'Unit 8', weightage: 12 },
+  { id: 'am-9', name: 'Linear Programming', subject: 'applied_math', unit: 'Unit 9', weightage: 10 },
 ];
 
 export function getChaptersBySubject(subject: string): Chapter[] {
@@ -79,5 +90,5 @@ export function getChaptersBySubject(subject: string): Chapter[] {
 }
 
 export function getSubjects(): string[] {
-  return ['accountancy', 'business', 'economics', 'english', 'marketing'];
+  return ['accountancy', 'business', 'economics', 'english', 'marketing', 'applied_math'];
 }

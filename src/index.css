@@ -41,6 +41,7 @@
     --subject-economics: 160 84% 39%;
     --subject-english: 38 92% 50%;
     --subject-marketing: 347 77% 50%;
+    --subject-applied-math: 188 92% 42%;
 
     /* Functional colors */
     --success: 142 71% 45%;
@@ -126,6 +127,9 @@
   .subject-marketing {
     @apply bg-[hsl(var(--subject-marketing))];
   }
+  .subject-applied-math {
+    @apply bg-[hsl(var(--subject-applied-math))];
+  }
   .text-subject-accountancy {
     color: hsl(var(--subject-accountancy));
   }
@@ -140,6 +144,9 @@
   }
   .text-subject-marketing {
     color: hsl(var(--subject-marketing));
+  }
+  .text-subject-applied-math {
+    color: hsl(var(--subject-applied-math));
   }
   .border-subject-accountancy {
     border-color: hsl(var(--subject-accountancy));
@@ -156,6 +163,9 @@
   .border-subject-marketing {
     border-color: hsl(var(--subject-marketing));
   }
+  .border-subject-applied-math {
+    border-color: hsl(var(--subject-applied-math));
+  }
   .bg-subject-accountancy\/10 {
     background-color: hsl(var(--subject-accountancy) / 0.1);
   }
@@ -170,6 +180,9 @@
   }
   .bg-subject-marketing\/10 {
     background-color: hsl(var(--subject-marketing) / 0.1);
+  }
+  .bg-subject-applied-math\/10 {
+    background-color: hsl(var(--subject-applied-math) / 0.1);
   }
 }
 

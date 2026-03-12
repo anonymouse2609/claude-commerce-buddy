@@ -123,7 +123,7 @@ export default function MCQPractice() {
             <div>
               <label className="text-sm font-medium mb-1 block">Subject</label>
               <select value={subject} onChange={e => { setSubject(e.target.value as Subject); setChapter(''); }} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm">
-                {(['accountancy', 'business', 'economics', 'english', 'marketing'] as Subject[]).map(s => (
+                {(['accountancy', 'business', 'economics', 'english', 'marketing', 'applied_math'] as Subject[]).map(s => (
                   <option key={s} value={s}>{SUBJECT_LABELS[s]}</option>
                 ))}
               </select>

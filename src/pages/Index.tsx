@@ -13,6 +13,7 @@ const subjectColorClasses: Record<Subject, { bg: string; text: string; border: s
   economics: { bg: 'bg-subject-economics/10', text: 'text-subject-economics', border: 'border-subject-economics' },
   english: { bg: 'bg-subject-english/10', text: 'text-subject-english', border: 'border-subject-english' },
   marketing: { bg: 'bg-subject-marketing/10', text: 'text-subject-marketing', border: 'border-subject-marketing' },
+  applied_math: { bg: 'bg-subject-applied-math/10', text: 'text-subject-applied-math', border: 'border-subject-applied-math' },
 };
 
 export default function Dashboard() {
@@ -41,7 +42,7 @@ export default function Dashboard() {
     return { completed, total: chapters.length, pct: chapters.length > 0 ? Math.round((completed / chapters.length) * 100) : 0 };
   };
 
-  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing'];
+  const subjects: Subject[] = ['accountancy', 'business', 'economics', 'english', 'marketing', 'applied_math'];
 
   const recentItems = [...papers.slice(0, 2).map(p => ({ type: 'Paper', subject: p.subject, date: p.createdAt })),
     ...worksheets.slice(0, 2).map(w => ({ type: 'Worksheet', subject: w.subject, date: w.createdAt })),
@@ -124,7 +125,22 @@ export default function Dashboard() {
                   <span>{sp.pct}%</span>
                 </div>
                 <div className="h-2 bg-background/50 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all ${subject === 'accountancy' ? 'subject-accountancy' : subject === 'business' ? 'subject-business' : subject === 'economics' ? 'subject-economics' : subject === 'english' ? 'subject-english' : 'subject-marketing'}`} style={{ width: `${sp.pct}%` }} />
+                  <div
+                    className={`h-full rounded-full transition-all ${
+                      subject === 'accountancy'
+                        ? 'subject-accountancy'
+                        : subject === 'business'
+                          ? 'subject-business'
+                          : subject === 'economics'
+                            ? 'subject-economics'
+                            : subject === 'english'
+                              ? 'subject-english'
+                              : subject === 'marketing'
+                                ? 'subject-marketing'
+                                : 'subject-applied-math'
+                    }`}
+                    style={{ width: `${sp.pct}%` }}
+                  />
                 </div>
               </Link>
             );

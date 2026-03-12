@@ -24,6 +24,7 @@ const subjectBg: Record<Subject, string> = {
   economics: 'bg-[hsl(var(--subject-economics)/0.1)]',
   english: 'bg-[hsl(var(--subject-english)/0.1)]',
   marketing: 'bg-[hsl(var(--subject-marketing)/0.1)]',
+  applied_math: 'bg-[hsl(var(--subject-applied-math)/0.1)]',
 };
 
 const subjectText: Record<Subject, string> = {
@@ -32,6 +33,7 @@ const subjectText: Record<Subject, string> = {
   economics: 'text-[hsl(var(--subject-economics))]',
   english: 'text-[hsl(var(--subject-english))]',
   marketing: 'text-[hsl(var(--subject-marketing))]',
+  applied_math: 'text-[hsl(var(--subject-applied-math))]',
 };
 
 const subjectBorder: Record<Subject, string> = {
@@ -40,6 +42,7 @@ const subjectBorder: Record<Subject, string> = {
   economics: 'border-[hsl(var(--subject-economics)/0.3)]',
   english: 'border-[hsl(var(--subject-english)/0.3)]',
   marketing: 'border-[hsl(var(--subject-marketing)/0.3)]',
+  applied_math: 'border-[hsl(var(--subject-applied-math)/0.3)]',
 };
 
 export default function RevisionNotesRenderer({ notes, subject }: Props) {
