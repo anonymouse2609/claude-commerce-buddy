@@ -193,8 +193,18 @@
     color: black !important;
     box-shadow: none !important;
     text-shadow: none !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    border-color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force all elements to have black text and white background */
+  html, body, div, span, p, h1, h2, h3, h4, h5, h6,
+  li, ul, ol, td, th, table, strong, em, b, i,
+  a, button, input, textarea, select, label {
+    color: black !important;
+    background: white !important;
+    background-color: white !important;
   }
 
   body {
@@ -205,6 +215,8 @@
     color: black !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   /* Hide ALL app UI except content */
@@ -212,16 +224,20 @@
   .theme-toggle, .menu-button, .print-button,
   button, .tab-bar, .filter-bar, footer,
   [class*='nav'], [class*='sidebar'],
-  [class*='header'], [class*='toolbar'] {
+  [class*='header'], [class*='toolbar'],
+  .no-print, [class*='no-print'] {
     display: none !important;
   }
 
   /* Show only the paper/content area */
-  .print-content, .paper-content, .question-list {
+  .print-content, .paper-content, .question-list,
+  .prose, [class*='prose'] {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 20pt !important;
+    color: black !important;
+    background: white !important;
   }
 
   /* Paper header */
@@ -230,6 +246,8 @@
     border-bottom: 2px solid black !important;
     padding-bottom: 12pt !important;
     margin-bottom: 16pt !important;
+    color: black !important;
+    background: white !important;
   }
 
   /* Section headers */
@@ -271,6 +289,7 @@
     display: block !important;
     color: black !important;
     padding: 2pt 0 !important;
+    background: white !important;
   }
 
   /* Tables */
@@ -278,6 +297,7 @@
     border-collapse: collapse !important;
     width: 100% !important;
     color: black !important;
+    background: white !important;
   }
   td, th {
     border: 1px solid black !important;
@@ -285,7 +305,11 @@
     color: black !important;
     background: white !important;
   }
-  th { background: #f0f0f0 !important; font-weight: bold !important; }
+  th {
+    background: #f0f0f0 !important;
+    font-weight: bold !important;
+    color: black !important;
+  }
 
   /* Answer sections */
   .answer-section {
@@ -294,6 +318,7 @@
     border: 1px solid #ccc !important;
     padding: 8pt !important;
     margin-top: 6pt !important;
+    color: black !important;
   }
 
   /* OR divider */
@@ -302,6 +327,7 @@
     font-weight: bold !important;
     color: black !important;
     margin: 8pt 0 !important;
+    background: white !important;
   }
 
   /* Marks badge */
@@ -315,11 +341,30 @@
 
   /* Page breaks */
   .section-break { page-break-before: always !important; }
-  h1, h2, h3 { page-break-after: avoid !important; color: black !important; }
+  h1, h2, h3 {
+    page-break-after: avoid !important;
+    color: black !important;
+    background: white !important;
+  }
 
-  /* Page margins */
+  /* Page margins and size */
   @page {
     margin: 2cm !important;
     size: A4 !important;
+  }
+
+  /* Ensure no content overflows */
+  .question, .answer-item, .notes-section,
+  .question-card, .section-header {
+    break-inside: avoid !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    max-width: 100% !important;
+  }
+
+  /* Force all text to be readable */
+  .prose * {
+    color: black !important;
+    background: white !important;
   }
 }

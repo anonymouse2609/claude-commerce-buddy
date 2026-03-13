@@ -6,53 +6,111 @@ import type { NotesData } from '@/components/RevisionNotesRenderer';
 import type { WorksheetData } from '@/components/WorksheetRenderer';
 
 const PRINT_STYLES = `
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #000 !important;
+    background: #fff !important;
+    background-color: #fff !important;
+    border-color: #000 !important;
+  }
+  html, body {
     font-family: 'Times New Roman', Times, serif;
     font-size: 12pt;
     line-height: 1.8;
-    color: #000;
-    background: #fff;
+    color: #000 !important;
+    background: #fff !important;
+    background-color: #fff !important;
     padding: 2cm;
     max-width: 100%;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    width: 100%;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    background: #fff !important;
+  }
+  p, div, span, table, td, th, li, ol, ul {
+    color: #000 !important;
+    background: #fff !important;
+    background-color: #fff !important;
   }
   .header {
     text-align: center;
-    border-top: 3px solid black;
-    border-bottom: 3px solid black;
+    border-top: 3px solid #000 !important;
+    border-bottom: 3px solid #000 !important;
     padding: 10pt 0;
     margin-bottom: 16pt;
     page-break-after: avoid;
+    background: #fff !important;
+    color: #000 !important;
   }
-  .header h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; }
-  .header p { font-size: 11pt; margin-top: 4pt; }
-  .header .meta { display: flex; justify-content: space-between; margin-top: 8pt; font-size: 11pt; font-weight: bold; }
+  .header h1 {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .header p {
+    font-size: 11pt;
+    margin-top: 4pt;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .header .meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8pt;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #000 !important;
+    background: #fff !important;
+  }
   .instructions {
-    border: 1px solid black;
+    border: 1px solid #000 !important;
     padding: 8pt 12pt;
     margin-bottom: 16pt;
     font-size: 11pt;
     page-break-inside: avoid;
+    background: #fff !important;
+    color: #000 !important;
   }
-  .instructions h3 { font-weight: bold; margin-bottom: 6pt; }
-  .instructions ol { padding-left: 20pt; }
-  .instructions li { margin-bottom: 3pt; }
+  .instructions h3 {
+    font-weight: bold;
+    margin-bottom: 6pt;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .instructions ol {
+    padding-left: 20pt;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .instructions li {
+    margin-bottom: 3pt;
+    color: #000 !important;
+    background: #fff !important;
+  }
   .section-header {
-    background: #f0f0f0;
-    border: 1px solid #000;
+    background: #f0f0f0 !important;
+    border: 1px solid #000 !important;
     padding: 6pt 10pt;
     font-weight: bold;
     font-size: 12pt;
     margin: 16pt 0 8pt 0;
     page-break-after: avoid;
+    color: #000 !important;
   }
   .section-instruction {
     font-style: italic;
     font-size: 11pt;
     margin-bottom: 8pt;
     page-break-after: avoid;
+    color: #000 !important;
+    background: #fff !important;
   }
   .question {
     display: flex;
@@ -60,42 +118,56 @@ const PRINT_STYLES = `
     margin-bottom: 12pt;
     page-break-inside: avoid;
     max-width: 100%;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .q-number { 
-    min-width: 22pt; 
-    font-weight: bold; 
-    font-size: 12pt; 
+  .q-number {
+    min-width: 22pt;
+    font-weight: bold;
+    font-size: 12pt;
     flex-shrink: 0;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .q-content { 
-    flex: 1; 
+  .q-content {
+    flex: 1;
     min-width: 0;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .q-text { 
-    font-size: 12pt; 
-    margin-bottom: 6pt; 
+  .q-text {
+    font-size: 12pt;
+    margin-bottom: 6pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .q-marks { 
-    float: right; 
-    font-weight: bold; 
-    font-size: 11pt; 
+  .q-marks {
+    float: right;
+    font-weight: bold;
+    font-size: 11pt;
     margin-left: 10pt;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .options { 
-    padding-left: 16pt; 
+  .options {
+    padding-left: 16pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .option { 
-    display: block; 
-    margin-bottom: 4pt; 
-    font-size: 12pt; 
+  .option {
+    display: block;
+    margin-bottom: 4pt;
+    font-size: 12pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
   .or-divider {
     text-align: center;
@@ -103,120 +175,190 @@ const PRINT_STYLES = `
     font-size: 12pt;
     margin: 8pt 0;
     letter-spacing: 4pt;
+    color: #000 !important;
+    background: #fff !important;
   }
   .given-data {
-    border-left: 3px solid #666;
+    border-left: 3px solid #666 !important;
     padding-left: 10pt;
     margin: 6pt 0;
     font-size: 11pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
   .answer-section {
     margin-top: 20pt;
-    border-top: 2px solid black;
+    border-top: 2px solid #000 !important;
     padding-top: 12pt;
     page-break-before: always;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .answer-header { 
-    font-size: 14pt; 
-    font-weight: bold; 
-    text-align: center; 
-    margin-bottom: 12pt; 
+  .answer-header {
+    font-size: 14pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 12pt;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .answer-item { 
-    margin-bottom: 12pt; 
+  .answer-item {
+    margin-bottom: 12pt;
     page-break-inside: avoid;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .answer-item-title { 
-    font-weight: bold; 
-    margin-bottom: 4pt; 
+  .answer-item-title {
+    font-weight: bold;
+    margin-bottom: 4pt;
+    color: #000 !important;
+    background: #fff !important;
   }
   .answer-step {
     display: flex;
     gap: 8pt;
     margin-bottom: 6pt;
     padding: 4pt 8pt;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
+    background: #f9f9f9 !important;
+    border: 1px solid #ddd !important;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
   }
-  .step-num { 
-    font-weight: bold; 
-    min-width: 20pt; 
+  .step-num {
+    font-weight: bold;
+    min-width: 20pt;
     flex-shrink: 0;
+    color: #000 !important;
+    background: #f9f9f9 !important;
   }
   .final-answer {
     margin-top: 4pt;
     padding: 6pt 10pt;
-    background: #e8f5e9;
-    border: 1px solid #a5d6a7;
+    background: #e8f5e9 !important;
+    border: 1px solid #a5d6a7 !important;
     font-weight: bold;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
   }
-  table { 
-    border-collapse: collapse; 
-    width: 100%; 
-    margin: 8pt 0; 
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8pt 0;
     table-layout: fixed;
+    color: #000 !important;
+    background: #fff !important;
   }
-  td, th { 
-    border: 1px solid black; 
-    padding: 5pt 8pt; 
-    text-align: left; 
-    font-size: 11pt; 
+  td, th {
+    border: 1px solid #000 !important;
+    padding: 5pt 8pt;
+    text-align: left;
+    font-size: 11pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  th { 
-    background: #f0f0f0; 
-    font-weight: bold; 
+  th {
+    background: #f0f0f0 !important;
+    font-weight: bold;
+    color: #000 !important;
   }
-  .notes-section { 
-    margin-bottom: 16pt; 
+  .notes-section {
+    margin-bottom: 16pt;
     page-break-inside: avoid;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .notes-section h3 { 
-    font-size: 13pt; 
-    font-weight: bold; 
-    margin-bottom: 8pt; 
-    border-bottom: 1px solid #ccc; 
-    padding-bottom: 4pt; 
+  .notes-section h3 {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 8pt;
+    border-bottom: 1px solid #ccc !important;
+    padding-bottom: 4pt;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .notes-item { 
-    margin-bottom: 6pt; 
-    font-size: 11pt; 
+  .notes-item {
+    margin-bottom: 6pt;
+    font-size: 11pt;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .notes-item strong { 
-    font-weight: bold; 
+  .notes-item strong {
+    font-weight: bold;
+    color: #000 !important;
+    background: #fff !important;
   }
-  .formula-box { 
-    font-family: 'Courier New', monospace; 
-    background: #f5f5f5; 
-    padding: 4pt 8pt; 
-    margin: 4pt 0; 
-    border: 1px solid #ddd; 
+  .formula-box {
+    font-family: 'Courier New', monospace;
+    background: #f5f5f5 !important;
+    padding: 4pt 8pt;
+    margin: 4pt 0;
+    border: 1px solid #ddd !important;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
+    color: #000 !important;
   }
-  @page { 
-    size: A4; 
-    margin: 2cm; 
+  @page {
+    size: A4;
+    margin: 2cm;
   }
-  @media print { 
-    body { 
-      padding: 0; 
+  @media print {
+    * {
+      color: #000 !important;
+      background: #fff !important;
+      background-color: #fff !important;
+      border-color: #000 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      padding: 0;
       max-width: none;
+      width: 100%;
+      color: #000 !important;
+      background: #fff !important;
     }
     .question, .answer-item, .notes-section {
       break-inside: avoid;
+    }
+    /* Force all text to be black */
+    h1, h2, h3, h4, h5, h6, p, div, span, li, td, th, strong, em {
+      color: #000 !important;
+    }
+    /* Force all backgrounds to be white */
+    .section-header, .answer-step, .final-answer, .formula-box, th {
+      background-color: #fff !important;
+      background: #fff !important;
+    }
+    .section-header {
+      background-color: #f0f0f0 !important;
+      background: #f0f0f0 !important;
+    }
+    .answer-step {
+      background-color: #f9f9f9 !important;
+      background: #f9f9f9 !important;
+    }
+    .final-answer {
+      background-color: #e8f5e9 !important;
+      background: #e8f5e9 !important;
+    }
+    .formula-box {
+      background-color: #f5f5f5 !important;
+      background: #f5f5f5 !important;
+    }
+    th {
+      background-color: #f0f0f0 !important;
+      background: #f0f0f0 !important;
     }
   }
 `;
