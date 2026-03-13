@@ -4,6 +4,7 @@ import { getChaptersBySubject } from '@/lib/syllabus-data';
 import { generateMCQs } from '@/lib/ai';
 import { saveMCQSession, updateMCQPerformance } from '@/lib/store';
 import { syncToGrowth, addToGrowth } from '@/lib/growth-sync';
+import { sanitizeText } from '@/lib/sanitize';
 import { Loader2, Check, X, RotateCcw } from 'lucide-react';
 
 export default function MCQPractice() {
@@ -175,7 +176,7 @@ export default function MCQPractice() {
             </span>
           )}
 
-          <p className="text-base font-medium whitespace-pre-wrap">{currentQ.question}</p>
+          <p className="text-base font-medium whitespace-pre-wrap">{sanitizeText(currentQ.question)}</p>
 
           <div className="space-y-2">
             {currentQ.options.map((opt, i) => {
@@ -196,7 +197,7 @@ export default function MCQPractice() {
                   className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors ${optionClass}`}
                 >
                   <span className="font-medium mr-2">{String.fromCharCode(65 + i)}.</span>
-                  {opt}
+                  {sanitizeText(opt)}
                   {showResult !== null && isCorrect && <Check className="inline ml-2 h-4 w-4 text-success" />}
                   {showResult !== null && isSelected && !isCorrect && <X className="inline ml-2 h-4 w-4 text-destructive" />}
                 </button>
@@ -206,7 +207,7 @@ export default function MCQPractice() {
 
           {showResult !== null && (
             <div className="bg-muted rounded-lg p-3 text-sm">
-              <strong>Explanation:</strong> {currentQ.explanation}
+              <strong>Explanation:</strong> {sanitizeText(currentQ.explanation)}
             </div>
           )}
 
@@ -234,9 +235,9 @@ export default function MCQPractice() {
               <div className="space-y-3">
                 {questions.filter((q, i) => answers[i] !== q.correctAnswer).map((q, i) => (
                   <div key={i} className="bg-muted rounded-lg p-3 text-sm">
-                    <p className="font-medium">{q.question}</p>
-                    <p className="text-success mt-1">Correct: {q.options[q.correctAnswer]}</p>
-                    <p className="text-muted-foreground mt-0.5">{q.explanation}</p>
+                    <p className="font-medium">{sanitizeText(q.question)}</p>
+                    <p className="text-success mt-1">Correct: {sanitizeText(q.options[q.correctAnswer])}</p>
+                    <p className="text-muted-foreground mt-0.5">{sanitizeText(q.explanation)}</p>
                   </div>
                 ))}
               </div>

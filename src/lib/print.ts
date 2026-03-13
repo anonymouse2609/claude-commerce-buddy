@@ -14,6 +14,9 @@ const PRINT_STYLES = `
     color: #000;
     background: #fff;
     padding: 2cm;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .header {
     text-align: center;
@@ -21,6 +24,7 @@ const PRINT_STYLES = `
     border-bottom: 3px solid black;
     padding: 10pt 0;
     margin-bottom: 16pt;
+    page-break-after: avoid;
   }
   .header h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; }
   .header p { font-size: 11pt; margin-top: 4pt; }
@@ -30,6 +34,7 @@ const PRINT_STYLES = `
     padding: 8pt 12pt;
     margin-bottom: 16pt;
     font-size: 11pt;
+    page-break-inside: avoid;
   }
   .instructions h3 { font-weight: bold; margin-bottom: 6pt; }
   .instructions ol { padding-left: 20pt; }
@@ -47,19 +52,51 @@ const PRINT_STYLES = `
     font-style: italic;
     font-size: 11pt;
     margin-bottom: 8pt;
+    page-break-after: avoid;
   }
   .question {
     display: flex;
     gap: 10pt;
     margin-bottom: 12pt;
     page-break-inside: avoid;
+    max-width: 100%;
   }
-  .q-number { min-width: 22pt; font-weight: bold; font-size: 12pt; }
-  .q-content { flex: 1; }
-  .q-text { font-size: 12pt; margin-bottom: 6pt; }
-  .q-marks { float: right; font-weight: bold; font-size: 11pt; }
-  .options { padding-left: 16pt; }
-  .option { display: block; margin-bottom: 4pt; font-size: 12pt; }
+  .q-number { 
+    min-width: 22pt; 
+    font-weight: bold; 
+    font-size: 12pt; 
+    flex-shrink: 0;
+  }
+  .q-content { 
+    flex: 1; 
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .q-text { 
+    font-size: 12pt; 
+    margin-bottom: 6pt; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .q-marks { 
+    float: right; 
+    font-weight: bold; 
+    font-size: 11pt; 
+    margin-left: 10pt;
+  }
+  .options { 
+    padding-left: 16pt; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .option { 
+    display: block; 
+    margin-bottom: 4pt; 
+    font-size: 12pt; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
   .or-divider {
     text-align: center;
     font-weight: bold;
@@ -72,15 +109,31 @@ const PRINT_STYLES = `
     padding-left: 10pt;
     margin: 6pt 0;
     font-size: 11pt;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .answer-section {
     margin-top: 20pt;
     border-top: 2px solid black;
     padding-top: 12pt;
+    page-break-before: always;
   }
-  .answer-header { font-size: 14pt; font-weight: bold; text-align: center; margin-bottom: 12pt; }
-  .answer-item { margin-bottom: 12pt; page-break-inside: avoid; }
-  .answer-item-title { font-weight: bold; margin-bottom: 4pt; }
+  .answer-header { 
+    font-size: 14pt; 
+    font-weight: bold; 
+    text-align: center; 
+    margin-bottom: 12pt; 
+  }
+  .answer-item { 
+    margin-bottom: 12pt; 
+    page-break-inside: avoid;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .answer-item-title { 
+    font-weight: bold; 
+    margin-bottom: 4pt; 
+  }
   .answer-step {
     display: flex;
     gap: 8pt;
@@ -88,25 +141,84 @@ const PRINT_STYLES = `
     padding: 4pt 8pt;
     background: #f9f9f9;
     border: 1px solid #ddd;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
-  .step-num { font-weight: bold; min-width: 20pt; }
+  .step-num { 
+    font-weight: bold; 
+    min-width: 20pt; 
+    flex-shrink: 0;
+  }
   .final-answer {
     margin-top: 4pt;
     padding: 6pt 10pt;
     background: #e8f5e9;
     border: 1px solid #a5d6a7;
     font-weight: bold;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
-  table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
-  td, th { border: 1px solid black; padding: 5pt 8pt; text-align: left; font-size: 11pt; }
-  th { background: #f0f0f0; font-weight: bold; }
-  .notes-section { margin-bottom: 16pt; }
-  .notes-section h3 { font-size: 13pt; font-weight: bold; margin-bottom: 8pt; border-bottom: 1px solid #ccc; padding-bottom: 4pt; }
-  .notes-item { margin-bottom: 6pt; font-size: 11pt; }
-  .notes-item strong { font-weight: bold; }
-  .formula-box { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 4pt 8pt; margin: 4pt 0; border: 1px solid #ddd; }
-  @page { size: A4; margin: 2cm; }
-  @media print { body { padding: 0; } }
+  table { 
+    border-collapse: collapse; 
+    width: 100%; 
+    margin: 8pt 0; 
+    table-layout: fixed;
+  }
+  td, th { 
+    border: 1px solid black; 
+    padding: 5pt 8pt; 
+    text-align: left; 
+    font-size: 11pt; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  th { 
+    background: #f0f0f0; 
+    font-weight: bold; 
+  }
+  .notes-section { 
+    margin-bottom: 16pt; 
+    page-break-inside: avoid;
+  }
+  .notes-section h3 { 
+    font-size: 13pt; 
+    font-weight: bold; 
+    margin-bottom: 8pt; 
+    border-bottom: 1px solid #ccc; 
+    padding-bottom: 4pt; 
+  }
+  .notes-item { 
+    margin-bottom: 6pt; 
+    font-size: 11pt; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .notes-item strong { 
+    font-weight: bold; 
+  }
+  .formula-box { 
+    font-family: 'Courier New', monospace; 
+    background: #f5f5f5; 
+    padding: 4pt 8pt; 
+    margin: 4pt 0; 
+    border: 1px solid #ddd; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  @page { 
+    size: A4; 
+    margin: 2cm; 
+  }
+  @media print { 
+    body { 
+      padding: 0; 
+      max-width: none;
+    }
+    .question, .answer-item, .notes-section {
+      break-inside: avoid;
+    }
+  }
 `;
 
 const s = sanitizeText;
