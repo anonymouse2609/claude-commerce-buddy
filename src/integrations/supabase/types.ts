@@ -14,26 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      user_data: {
-        Row: {
-          user_id: string;
-          data_key: string;
-          data_value: string;
-          updated_at: string;
-        };
-        Insert: {
-          user_id: string;
-          data_key: string;
-          data_value: string;
-          updated_at?: string;
-        };
-        Update: {
-          user_id?: string;
-          data_key?: string;
-          data_value?: string;
-          updated_at?: string;
-        };
-      };
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
