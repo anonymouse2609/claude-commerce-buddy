@@ -1,4 +1,5 @@
 import { getMCQPerformance } from '@/lib/store';
+import { getLocalStorageItem, setLocalStorageItem } from '@/lib/localStorageSync';
 import { SUBJECT_LABELS, type Subject } from '@/types';
 
 export interface GrowthEvent {
@@ -22,7 +23,7 @@ const SYNC_KEY = 'growth_sync_data';
 const GROWTH_URL_KEY = 'growth_app_url';
 
 export function syncToGrowth(event: Partial<GrowthEvent>) {
-  const existing: GrowthEvent[] = JSON.parse(localStorage.getItem(SYNC_KEY) || '[]');
+  const existing: GrowthEvent[] = getLocalStorageItem(SYNC_KEY, []);
   existing.push({
     id: Date.now(),
     timestamp: new Date().toISOString(),
@@ -39,27 +40,27 @@ export function syncToGrowth(event: Partial<GrowthEvent>) {
     marks: event.marks,
     synced: false,
   });
-  localStorage.setItem(SYNC_KEY, JSON.stringify(existing));
+  setLocalStorageItem(SYNC_KEY, existing);
   writeDailySummary();
 }
 
 export function getPendingSyncEvents(): GrowthEvent[] {
-  const all: GrowthEvent[] = JSON.parse(localStorage.getItem(SYNC_KEY) || '[]');
+  const all: GrowthEvent[] = getLocalStorageItem(SYNC_KEY, []);
   return all.filter(e => !e.synced);
 }
 
 export function markAllSynced() {
-  const all: GrowthEvent[] = JSON.parse(localStorage.getItem(SYNC_KEY) || '[]');
+  const all: GrowthEvent[] = getLocalStorageItem(SYNC_KEY, []);
   all.forEach(e => (e.synced = true));
-  localStorage.setItem(SYNC_KEY, JSON.stringify(all));
+  setLocalStorageItem(SYNC_KEY, all);
 }
 
 export function getGrowthUrl(): string {
-  return localStorage.getItem(GROWTH_URL_KEY) || '';
+  return getLocalStorageItem(GROWTH_URL_KEY, '');
 }
 
 export function setGrowthUrl(url: string) {
-  localStorage.setItem(GROWTH_URL_KEY, url);
+  setLocalStorageItem(GROWTH_URL_KEY, url);
 }
 
 export function addToRevision(subject: string, chapter: string, difficulty: string) {
@@ -93,7 +94,7 @@ export function addToGrowth(subject: string, chapter: string, difficulty?: strin
 // Daily summary
 function writeDailySummary() {
   const today = new Date().toISOString().slice(0, 10);
-  const all: GrowthEvent[] = JSON.parse(localStorage.getItem(SYNC_KEY) || '[]');
+  const all: GrowthEvent[] = getLocalStorageItem(SYNC_KEY, []);
   const todayEvents = all.filter(e => e.timestamp.startsWith(today));
 
   const subjects = new Set(todayEvents.map(e => e.subject));
@@ -113,7 +114,7 @@ function writeDailySummary() {
     totalActivities: todayEvents.length,
   };
 
-  localStorage.setItem(`growth_daily_summary_${today}`, JSON.stringify(summary));
+  setLocalStorageItem(`growth_daily_summary_${today}`, summary);
 }
 
 // Chapter strength analysis

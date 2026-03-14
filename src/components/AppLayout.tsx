@@ -1,11 +1,24 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, BookOpen, FileText, PenTool, StickyNote, HelpCircle, 
-  Clock, BarChart3, Library, Moon, Sun, Menu, X
+import {
+  Home,
+  BookOpen,
+  FileText,
+  PenTool,
+  StickyNote,
+  HelpCircle,
+  Clock,
+  BarChart3,
+  Library,
+  Settings,
+  Moon,
+  Sun,
+  Menu,
+  X,
 } from 'lucide-react';
 import { getDarkMode, setDarkMode } from '@/lib/store';
 import GrowthSyncIndicator from '@/components/GrowthSyncIndicator';
+import { useAuth } from '@/lib/auth';
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: Home },
@@ -17,6 +30,7 @@ const navItems = [
   { label: 'PYQ Section', path: '/pyq', icon: Clock },
   { label: 'Analytics', path: '/analytics', icon: BarChart3 },
   { label: 'My Library', path: '/library', icon: Library },
+  { label: 'Settings', path: '/settings', icon: Settings },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -34,6 +48,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     setDarkMode(next);
   };
 
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen flex bg-background">
       {/* Desktop sidebar */}
@@ -41,6 +57,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="p-6 border-b border-border">
           <h1 className="text-xl font-bold">📚 CBSE Study Pro</h1>
           <p className="text-xs text-muted-foreground mt-1">Class 12 Commerce</p>
+          {user?.email && (
+            <p className="text-xs text-muted-foreground mt-2 truncate">{user.email}</p>
+          )}
         </div>
         <nav className="flex-1 p-3 overflow-y-auto">
           {navItems.map(item => (

@@ -1,4 +1,5 @@
 import { ChapterProgress, SavedPaper, SavedWorksheet, SavedNotes, MCQSession, MCQPerformance } from '@/types';
+import { getLocalStorageItem, setLocalStorageItem } from '@/lib/localStorageSync';
 
 const KEYS = {
   CHAPTER_PROGRESS: 'cbse-chapter-progress',
@@ -12,14 +13,11 @@ const KEYS = {
 };
 
 function get<T>(key: string, fallback: T): T {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : fallback;
-  } catch { return fallback; }
+  return getLocalStorageItem(key, fallback);
 }
 
 function set(key: string, value: unknown) {
-  localStorage.setItem(key, JSON.stringify(value));
+  setLocalStorageItem(key, value);
 }
 
 // Chapter Progress
@@ -109,11 +107,11 @@ export function updateMCQPerformance(chapterId: string, subject: string, score: 
 
 // Exam Date
 export function getExamDate(): string | null {
-  return localStorage.getItem(KEYS.EXAM_DATE);
+  return getLocalStorageItem(KEYS.EXAM_DATE, null);
 }
 
 export function setExamDate(date: string) {
-  localStorage.setItem(KEYS.EXAM_DATE, date);
+  setLocalStorageItem(KEYS.EXAM_DATE, date);
 }
 
 // Dark Mode
