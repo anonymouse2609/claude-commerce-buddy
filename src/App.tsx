@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import Index from "./pages/Index";
 import SyllabusTracker from "./pages/SyllabusTracker";
@@ -15,20 +15,8 @@ import Analytics from "./pages/Analytics";
 import MyLibrary from "./pages/MyLibrary";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import Auth from "./pages/Auth";
-import { AuthProvider, RequireAuth } from "./lib/auth";
 
 const queryClient = new QueryClient();
-
-function ProtectedLayout() {
-  return (
-    <RequireAuth>
-      <AppLayout>
-        <Outlet />
-      </AppLayout>
-    </RequireAuth>
-  );
-}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,24 +24,19 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Auth />} />
-            <Route element={<ProtectedLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/syllabus" element={<SyllabusTracker />} />
-              <Route path="/sample-paper" element={<SamplePaper />} />
-              <Route path="/worksheet" element={<ChapterWorksheet />} />
-              <Route path="/revision-notes" element={<RevisionNotes />} />
-              <Route path="/mcq" element={<MCQPractice />} />
-              <Route path="/pyq" element={<PYQSection />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/library" element={<MyLibrary />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </AuthProvider>
+        <Routes>
+          <Route path="/" element={<AppLayout><Index /></AppLayout>} />
+          <Route path="/syllabus" element={<AppLayout><SyllabusTracker /></AppLayout>} />
+          <Route path="/sample-paper" element={<AppLayout><SamplePaper /></AppLayout>} />
+          <Route path="/worksheet" element={<AppLayout><ChapterWorksheet /></AppLayout>} />
+          <Route path="/revision-notes" element={<AppLayout><RevisionNotes /></AppLayout>} />
+          <Route path="/mcq" element={<AppLayout><MCQPractice /></AppLayout>} />
+          <Route path="/pyq" element={<AppLayout><PYQSection /></AppLayout>} />
+          <Route path="/analytics" element={<AppLayout><Analytics /></AppLayout>} />
+          <Route path="/library" element={<AppLayout><MyLibrary /></AppLayout>} />
+          <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
+          <Route path="*" element={<AppLayout><NotFound /></AppLayout>} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

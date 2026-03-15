@@ -17,8 +17,6 @@ import {
   X,
 } from 'lucide-react';
 import { getDarkMode, setDarkMode } from '@/lib/store';
-import GrowthSyncIndicator from '@/components/GrowthSyncIndicator';
-import { useAuth } from '@/lib/auth';
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: Home },
@@ -48,8 +46,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     setDarkMode(next);
   };
 
-  const { user } = useAuth();
-
   return (
     <div className="min-h-screen flex bg-background">
       {/* Desktop sidebar */}
@@ -57,9 +53,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="p-6 border-b border-border">
           <h1 className="text-xl font-bold">📚 CBSE Study Pro</h1>
           <p className="text-xs text-muted-foreground mt-1">Class 12 Commerce</p>
-          {user?.email && (
-            <p className="text-xs text-muted-foreground mt-2 truncate">{user.email}</p>
-          )}
         </div>
         <nav className="flex-1 p-3 overflow-y-auto">
           {navItems.map(item => (

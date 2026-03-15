@@ -308,6 +308,28 @@ const PRINT_STYLES = `
     white-space: pre-wrap;
     color: #000 !important;
   }
+  #print-close-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
+  #print-close-btn:hover {
+    background: rgba(0, 0, 0, 0.95);
+  }
   @page {
     size: A4;
     margin: 2cm;
@@ -360,13 +382,39 @@ const PRINT_STYLES = `
       background-color: #f0f0f0 !important;
       background: #f0f0f0 !important;
     }
+    #print-close-btn {
+      display: none !important;
+    }
   }
 `;
 
 const s = sanitizeText;
 
 function wrapHTML(title: string, body: string): string {
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${s(title)}</title><style>${PRINT_STYLES}</style></head><body>${body}</body></html>`;
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>${s(title)}</title>
+    <style>${PRINT_STYLES}</style>
+  </head>
+  <body>
+    <button id="print-close-btn" title="Close (Esc)" aria-label="Close print view">X</button>
+    ${body}
+    <script>
+      const closePrintView = () => {
+        window.close();
+        if (window.opener && !window.opener.closed) {
+          window.opener.focus();
+        }
+      };
+      document.getElementById('print-close-btn')?.addEventListener('click', closePrintView);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closePrintView();
+      });
+    </script>
+  </body>
+</html>`;
 }
 
 export function openPrintView(html: string) {
