@@ -1,5 +1,5 @@
-const STATIC_CACHE = 'static-cache-v1';
-const API_CACHE = 'api-cache-v1';
+const STATIC_CACHE = 'static-cache-v3';
+const API_CACHE = 'api-cache-v3';
 
 // Assets to cache on install (app shell)
 const staticAssets = [
