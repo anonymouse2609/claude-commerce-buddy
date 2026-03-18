@@ -16,7 +16,8 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import { getDarkMode, setDarkMode } from '@/lib/store';
+import { getDarkMode, setDarkMode } from "@/lib/store";
+import GrowthSyncIndicator from "@/components/GrowthSyncIndicator";
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: Home },
