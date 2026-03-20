@@ -8,6 +8,17 @@ import WorksheetRenderer, { type WorksheetData } from '@/components/WorksheetRen
 
 type Tab = 'papers' | 'worksheets' | 'notes' | 'mcq';
 
+function parseContent(content: any): any {
+  if (typeof content === 'object' && content !== null) return content;
+  if (typeof content === 'string') {
+    try { return JSON.parse(content); } catch {}
+    try { return JSON.parse(content.replace(/```json/gi, '').replace(/```/g, '').trim()); } catch {}
+    const s = content.indexOf('{'); const e = content.lastIndexOf('}');
+    if (s !== -1 && e !== -1) { try { return JSON.parse(content.slice(s, e + 1)); } catch {} }
+  }
+  return null;
+}
+
 export default function MyLibrary() {
   const [tab, setTab] = useState<Tab>('papers');
   const [viewContent, setViewContent] = useState<string | null>(null);
@@ -32,20 +43,11 @@ export default function MyLibrary() {
     return (
       <div className="space-y-4 animate-fade-in">
         <div className="flex items-center gap-2 no-print">
-          <button
-            onClick={() => setViewNotes(null)}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto"
-          >
+          <button onClick={() => setViewNotes(null)} className="text-sm text-muted-foreground hover:text-foreground">← Back</button>
+          <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto">
             <Printer className="h-4 w-4" /> Print
           </button>
         </div>
-
         <div className="bg-card rounded-xl border border-border p-6 print-content">
           <RevisionNotesRenderer notes={viewNotes.notes} subject={viewNotes.subject} />
         </div>
@@ -57,20 +59,11 @@ export default function MyLibrary() {
     return (
       <div className="space-y-4 animate-fade-in">
         <div className="flex items-center gap-2 no-print">
-          <button
-            onClick={() => setViewWorksheet(null)}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto"
-          >
+          <button onClick={() => setViewWorksheet(null)} className="text-sm text-muted-foreground hover:text-foreground">← Back</button>
+          <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto">
             <Printer className="h-4 w-4" /> Print
           </button>
         </div>
-
         <div className="bg-card rounded-xl border border-border p-6 print-content">
           <WorksheetRenderer data={viewWorksheet.data} subject={viewWorksheet.subject} showAnswers={true} />
         </div>
@@ -146,12 +139,11 @@ export default function MyLibrary() {
               <div
                 className="cursor-pointer flex-1"
                 onClick={() => {
-                  try {
-                    const parsed = JSON.parse(w.content) as WorksheetData;
-                    setViewWorksheet({ data: parsed, subject: w.subject });
-                  } catch {
-                    // Fallback: still never show raw JSON; show a friendly message instead.
-                    setViewContent('Unable to open this worksheet (invalid saved format). Try regenerating and saving again.');
+                  const parsed = parseContent(w.content);
+                  if (parsed && parsed.sections) {
+                    setViewWorksheet({ data: parsed as WorksheetData, subject: w.subject });
+                  } else {
+                    setViewContent('Unable to open this worksheet. Please regenerate and save again.');
                   }
                 }}
               >
@@ -174,12 +166,11 @@ export default function MyLibrary() {
               <div
                 className="cursor-pointer flex-1"
                 onClick={() => {
-                  try {
-                    const parsed = JSON.parse(n.content) as NotesData;
-                    setViewNotes({ notes: parsed, subject: n.subject });
-                  } catch {
-                    // Fallback: still never show raw JSON; show a friendly message instead.
-                    setViewContent('Unable to open these notes (invalid saved format). Try regenerating and saving again.');
+                  const parsed = parseContent(n.content);
+                  if (parsed) {
+                    setViewNotes({ notes: parsed as NotesData, subject: n.subject });
+                  } else {
+                    setViewContent('Unable to open these notes. Please regenerate and save again.');
                   }
                 }}
               >
