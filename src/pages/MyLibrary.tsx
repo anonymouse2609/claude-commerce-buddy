@@ -140,7 +140,7 @@ export default function MyLibrary() {
                 className="cursor-pointer flex-1"
                 onClick={() => {
                   const parsed = parseContent(w.content);
-                  if (parsed && parsed.sections) {
+                  if (parsed) {
                     setViewWorksheet({ data: parsed as WorksheetData, subject: w.subject });
                   } else {
                     setViewContent('Unable to open this worksheet. Please regenerate and save again.');
