@@ -55,7 +55,7 @@ export default function ChapterWorksheet() {
       subject,
       chapter: chapterName,
       questionTypes: selectedTypes,
-      content: JSON.stringify(worksheetData),
+      content: worksheetData as any,
       createdAt: new Date().toISOString(),
     });
     syncToGrowth({
