@@ -4,6 +4,7 @@ import { getSavedPapers, getSavedWorksheets, getSavedNotes, getMCQSessions, dele
 import { Trash2, FileText, StickyNote, PenTool, HelpCircle, Printer } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import RevisionNotesRenderer, { type NotesData } from '@/components/RevisionNotesRenderer';
+import WorksheetRenderer, { type WorksheetData } from '@/components/WorksheetRenderer';
 
 type Tab = 'papers' | 'worksheets' | 'notes' | 'mcq';
 
@@ -11,6 +12,7 @@ export default function MyLibrary() {
   const [tab, setTab] = useState<Tab>('papers');
   const [viewContent, setViewContent] = useState<string | null>(null);
   const [viewNotes, setViewNotes] = useState<{ notes: NotesData; subject: Subject } | null>(null);
+  const [viewWorksheet, setViewWorksheet] = useState<{ data: WorksheetData; subject: Subject } | null>(null);
   const [, forceUpdate] = useState(0);
   const refresh = () => forceUpdate(n => n + 1);
 
@@ -46,6 +48,31 @@ export default function MyLibrary() {
 
         <div className="bg-card rounded-xl border border-border p-6 print-content">
           <RevisionNotesRenderer notes={viewNotes.notes} subject={viewNotes.subject} />
+        </div>
+      </div>
+    );
+  }
+
+  if (viewWorksheet) {
+    return (
+      <div className="space-y-4 animate-fade-in">
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => setViewWorksheet(null)}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-accent ml-auto"
+          >
+            <Printer className="h-4 w-4" /> Print
+          </button>
+        </div>
+
+        <div className="bg-card rounded-xl border border-border p-6 print-content">
+          <WorksheetRenderer data={viewWorksheet.data} subject={viewWorksheet.subject} showAnswers={true} />
         </div>
       </div>
     );
@@ -116,7 +143,18 @@ export default function MyLibrary() {
           {worksheets.length === 0 && <p className="text-muted-foreground text-sm py-8 text-center">No saved worksheets yet</p>}
           {worksheets.map(w => (
             <div key={w.id} className="bg-card rounded-xl border border-border p-4 flex items-center justify-between">
-              <div className="cursor-pointer flex-1" onClick={() => setViewContent(w.content)}>
+              <div
+                className="cursor-pointer flex-1"
+                onClick={() => {
+                  try {
+                    const parsed = JSON.parse(w.content) as WorksheetData;
+                    setViewWorksheet({ data: parsed, subject: w.subject });
+                  } catch {
+                    // Fallback: still never show raw JSON; show a friendly message instead.
+                    setViewContent('Unable to open this worksheet (invalid saved format). Try regenerating and saving again.');
+                  }
+                }}
+              >
                 <p className="font-medium text-sm">{SUBJECT_LABELS[w.subject]} — {w.chapter}</p>
                 <p className="text-xs text-muted-foreground">{new Date(w.createdAt).toLocaleDateString()} • {w.questionTypes.join(', ')}</p>
               </div>
